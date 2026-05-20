@@ -1,176 +1,238 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import Dropdown from '@/Components/Dropdown';
-import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
+import { Link, usePage } from '@inertiajs/react';
+import ApplicationLogo from '@/Components/ApplicationLogo';
+import {
+    HomeIcon, GridIcon, UsersIcon, ClipboardIcon, UploadIcon,
+    DocumentIcon, CheckSquareIcon, CheckCircleIcon, CogIcon,
+    LogOutIcon, BellIcon, SearchIcon, PlusIcon, MenuIcon, XIcon,
+} from '@/Components/Icons';
 
-export default function AuthenticatedLayout({ header, children }) {
-    const user = usePage().props.auth.user;
+const CICLO = '2024-2025';
 
-    const [showingNavigationDropdown, setShowingNavigationDropdown] =
-        useState(false);
+const ROL_LABEL = {
+    alumno:        'Estudiante',
+    docente:       'Docente',
+    administrador: 'Administración',
+};
+
+const NAV = {
+    alumno: [
+        { label: 'Panel Principal',         href: route('dashboard'),          icon: HomeIcon },
+        { label: 'Catálogo de Actividades', href: route('actividades.index'),  icon: GridIcon },
+        { label: 'Mi Historial',            href: route('historial.index'),    icon: ClipboardIcon },
+        { label: 'Subir Evidencia',         href: route('evidencias.create'),  icon: UploadIcon },
+        { label: 'Mis Constancias',         href: route('constancias.index'),  icon: DocumentIcon },
+    ],
+    docente: [
+        { label: 'Panel Principal', href: route('dashboard'),          icon: HomeIcon },
+        { label: 'Pase de Lista',   href: route('asistencia.index'),   icon: CheckSquareIcon },
+        { label: 'Mis Grupos',      href: route('grupos.index'),       icon: UsersIcon },
+        { label: 'Expedientes',     href: route('expedientes.index'),  icon: ClipboardIcon },
+    ],
+    administrador: [
+        { label: 'Panel Principal',      href: route('dashboard'),           icon: HomeIcon },
+        { label: 'Catálogo Actividades', href: route('admin.catalogo'),      icon: GridIcon },
+        { label: 'Gestión de Alumnos',   href: route('admin.alumnos'),       icon: UsersIcon },
+        { label: 'Validar Evidencias',   href: route('admin.evidencias'),    icon: CheckCircleIcon },
+        { label: 'Constancias',          href: route('admin.constancias'),   icon: DocumentIcon },
+    ],
+};
+
+function SidebarLink({ item, isActive }) {
+    const Icon = item.icon;
+    return (
+        <Link
+            href={item.href}
+            className={[
+                'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150',
+                isActive
+                    ? 'bg-sidebar-active text-white'
+                    : 'text-sidebar-text hover:bg-sidebar-hover hover:text-white',
+            ].join(' ')}
+        >
+            <span className={isActive ? 'opacity-100' : 'opacity-60 group-hover:opacity-90'}>
+                <Icon />
+            </span>
+            {item.label}
+        </Link>
+    );
+}
+
+function Sidebar({ user, currentPath, onClose }) {
+    const rol = user?.rol ?? 'alumno';
+    const links = NAV[rol] ?? NAV.alumno;
+    const canCreateActivity = rol === 'administrador' || rol === 'docente';
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <nav className="border-b border-gray-100 bg-white">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex h-16 justify-between">
-                        <div className="flex">
-                            <div className="flex shrink-0 items-center">
-                                <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
-                                </Link>
-                            </div>
-
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
-                                >
-                                    Dashboard
-                                </NavLink>
-                            </div>
-                        </div>
-
-                        <div className="hidden sm:ms-6 sm:flex sm:items-center">
-                            <div className="relative ms-3">
-                                <Dropdown>
-                                    <Dropdown.Trigger>
-                                        <span className="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
-                                            >
-                                                {user.name}
-
-                                                <svg
-                                                    className="-me-0.5 ms-2 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </Dropdown.Trigger>
-
-                                    <Dropdown.Content>
-                                        <Dropdown.Link
-                                            href={route('profile.edit')}
-                                        >
-                                            Profile
-                                        </Dropdown.Link>
-                                        <Dropdown.Link
-                                            href={route('logout')}
-                                            method="post"
-                                            as="button"
-                                        >
-                                            Log Out
-                                        </Dropdown.Link>
-                                    </Dropdown.Content>
-                                </Dropdown>
-                            </div>
-                        </div>
-
-                        <div className="-me-2 flex items-center sm:hidden">
-                            <button
-                                onClick={() =>
-                                    setShowingNavigationDropdown(
-                                        (previousState) => !previousState,
-                                    )
-                                }
-                                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
-                            >
-                                <svg
-                                    className="h-6 w-6"
-                                    stroke="currentColor"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        className={
-                                            !showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        className={
-                                            showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
+        <aside className="flex h-full w-60 flex-col bg-sidebar shadow-sidebar">
+            {/* Logo & branding */}
+            <div className="flex items-center gap-3 px-5 py-5">
+                <ApplicationLogo className="h-8 w-8 flex-shrink-0 text-white opacity-90" />
+                <div className="min-w-0">
+                    <p className="text-sm font-bold tracking-wide text-white">S.A.A.C.</p>
+                    <p className="text-xs font-medium text-sidebar-muted">TESCHA</p>
                 </div>
+            </div>
 
-                <div
-                    className={
-                        (showingNavigationDropdown ? 'block' : 'hidden') +
-                        ' sm:hidden'
-                    }
-                >
-                    <div className="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
-                        >
-                            Dashboard
-                        </ResponsiveNavLink>
-                    </div>
+            {/* Role + cycle */}
+            <div className="mx-4 mb-4 rounded-lg bg-sidebar-active/60 px-3 py-2">
+                <p className="text-xs font-semibold uppercase tracking-wider text-white/50">
+                    {ROL_LABEL[rol] ?? 'Usuario'}
+                </p>
+                <p className="mt-0.5 text-xs text-white/70">Ciclo Escolar {CICLO}</p>
+            </div>
 
-                    <div className="border-t border-gray-200 pb-1 pt-4">
-                        <div className="px-4">
-                            <div className="text-base font-medium text-gray-800">
-                                {user.name}
-                            </div>
-                            <div className="text-sm font-medium text-gray-500">
-                                {user.email}
-                            </div>
-                        </div>
-
-                        <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route('profile.edit')}>
-                                Profile
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink
-                                method="post"
-                                href={route('logout')}
-                                as="button"
-                            >
-                                Log Out
-                            </ResponsiveNavLink>
-                        </div>
-                    </div>
+            {/* Nueva Actividad button (admin/docente) */}
+            {canCreateActivity && (
+                <div className="px-4 pb-4">
+                    <Link
+                        href="/actividades/nueva"
+                        className="flex w-full items-center justify-center gap-2 rounded-lg bg-guinda py-2 text-sm font-semibold text-white transition-colors hover:bg-guinda-700 active:scale-[0.98]"
+                    >
+                        <PlusIcon />
+                        Nueva Actividad
+                    </Link>
                 </div>
-            </nav>
-
-            {header && (
-                <header className="bg-white shadow">
-                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                        {header}
-                    </div>
-                </header>
             )}
 
-            <main>{children}</main>
+            <div className="mx-4 mb-3 border-t border-white/10" />
+
+            {/* Navigation */}
+            <nav className="sidebar-scroll flex-1 overflow-y-auto px-3 pb-4">
+                <ul className="space-y-0.5">
+                    {links.map((item) => (
+                        <li key={item.href}>
+                            <SidebarLink
+                                item={item}
+                                isActive={currentPath === item.href || (item.href === route('dashboard') && currentPath === '/dashboard')}
+                            />
+                        </li>
+                    ))}
+                </ul>
+            </nav>
+
+            <div className="mx-4 border-t border-white/10" />
+
+            {/* Bottom actions */}
+            <div className="px-3 py-3 space-y-0.5">
+                <Link
+                    href={route('profile.edit')}
+                    className="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-sidebar-text transition-all hover:bg-sidebar-hover hover:text-white"
+                >
+                    <span className="opacity-60 group-hover:opacity-90"><CogIcon /></span>
+                    Configuración
+                </Link>
+                <Link
+                    href={route('logout')}
+                    method="post"
+                    as="button"
+                    className="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-sidebar-text transition-all hover:bg-red-900/30 hover:text-red-300"
+                >
+                    <span className="opacity-60 group-hover:opacity-90"><LogOutIcon /></span>
+                    Cerrar Sesión
+                </Link>
+            </div>
+
+            <div className="px-4 py-3">
+                <p className="text-[10px] text-white/25 text-center">SAAC v1.0 · {new Date().getFullYear()}</p>
+            </div>
+        </aside>
+    );
+}
+
+function Topbar({ user, header }) {
+    return (
+        <div className="flex h-14 items-center justify-between gap-4 border-b border-cream-400 bg-cream-100 px-6">
+            {/* Left: page title or breadcrumb */}
+            <div className="flex items-center gap-2 min-w-0">
+                <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide whitespace-nowrap">
+                    S.A.A.C. TESCHA
+                </span>
+                {header && (
+                    <>
+                        <span className="text-gray-300">/</span>
+                        <span className="text-sm font-medium text-gray-700 truncate">{header}</span>
+                    </>
+                )}
+            </div>
+
+            {/* Right: search + notifications + avatar */}
+            <div className="flex items-center gap-3 flex-shrink-0">
+                <div className="relative hidden md:block">
+                    <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-gray-400">
+                        <SearchIcon />
+                    </span>
+                    <input
+                        type="search"
+                        placeholder="Buscar..."
+                        className="w-48 rounded-lg border border-cream-400 bg-white py-1.5 pl-9 pr-3 text-sm placeholder-gray-400 focus:border-guinda focus:outline-none focus:ring-1 focus:ring-guinda/30"
+                    />
+                </div>
+
+                <button className="relative rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-cream-300 hover:text-gray-700">
+                    <BellIcon />
+                    <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-guinda" />
+                </button>
+
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-guinda text-xs font-bold text-white select-none">
+                    {user?.name?.[0]?.toUpperCase() ?? 'U'}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default function AuthenticatedLayout({ header, children }) {
+    const { auth, ziggy } = usePage().props;
+    const user = auth.user;
+    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    return (
+        <div className="flex h-screen overflow-hidden bg-cream">
+            {/* Mobile overlay */}
+            {sidebarOpen && (
+                <div
+                    className="fixed inset-0 z-20 bg-black/40 lg:hidden"
+                    onClick={() => setSidebarOpen(false)}
+                />
+            )}
+
+            {/* Sidebar — desktop fixed, mobile drawer */}
+            <div className={[
+                'fixed inset-y-0 left-0 z-30 transition-transform duration-200 lg:static lg:translate-x-0',
+                sidebarOpen ? 'translate-x-0' : '-translate-x-full',
+            ].join(' ')}>
+                <Sidebar
+                    user={user}
+                    currentPath={currentPath}
+                    onClose={() => setSidebarOpen(false)}
+                />
+            </div>
+
+            {/* Main */}
+            <div className="flex flex-1 flex-col overflow-hidden">
+                {/* Mobile topbar toggle */}
+                <div className="flex h-14 items-center gap-3 border-b border-cream-400 bg-cream-100 px-4 lg:hidden">
+                    <button
+                        onClick={() => setSidebarOpen(true)}
+                        className="rounded-lg p-1.5 text-gray-600 hover:bg-cream-300"
+                    >
+                        <MenuIcon />
+                    </button>
+                    <span className="text-sm font-bold text-gray-700">S.A.A.C. TESCHA</span>
+                </div>
+
+                {/* Desktop topbar */}
+                <div className="hidden lg:block">
+                    <Topbar user={user} header={header} />
+                </div>
+
+                {/* Scrollable content */}
+                <main className="flex-1 overflow-y-auto bg-cream p-6">
+                    {children}
+                </main>
+            </div>
         </div>
     );
 }
