@@ -122,13 +122,13 @@ class AsistenciaController extends Controller
                 $asistenciaArray[] = $asistenciasMap[$date] ?? null;
             }
 
-            // 'pct': computed overall attendance percentage (round(asistioCount / totalClases * 100)) of ALL asistencias registered in the DB for this inscription (if no classes registered, default to 100).
+            // 'pct': computed overall attendance percentage (round(asistioCount / totalClases * 100)) of ALL asistencias registered in the DB for this inscription (if no classes registered, default to 0).
             $totalClases = $inscripcion->asistencias->count();
             if ($totalClases > 0) {
                 $asistioCount = $inscripcion->asistencias->where('asistio', true)->count();
                 $pct = (int) round(($asistioCount / $totalClases) * 100);
             } else {
-                $pct = 100;
+                $pct = 0;
             }
 
             return [
@@ -234,7 +234,7 @@ class AsistenciaController extends Controller
                     $asistioCount = $inscripcion->asistencias()->where('asistio', true)->count();
                     $pct = (int) round(($asistioCount / $totalClases) * 100);
                 } else {
-                    $pct = 100;
+                    $pct = 0;
                 }
 
                 // If pct >= 60, update inscription estatus to 'acreditado' and increment student's creditos_acumulados by activity's credits

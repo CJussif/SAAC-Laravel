@@ -2,24 +2,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { DocumentIcon } from '@/Components/Icons';
 
-const CONSTANCIAS = [
-    {
-        id: 1, folio: 'ACT 2023-089',
-        nombre: 'Taller de Emprendimiento Tecnológico',
-        completado: '16 Nov 2023', creditos: 2.0, tipo: 'cultural',
-    },
-    {
-        id: 2, folio: 'ACT 2023-042',
-        nombre: 'Simposio de Ingeniería Sustentable',
-        completado: '02 Sep 2023', creditos: 1.5, tipo: 'academica',
-    },
-    {
-        id: 3, folio: 'ACT 2022-118',
-        nombre: 'Torneo Regional de Robótica',
-        completado: '28 Nov 2022', creditos: 3.0, tipo: 'academica',
-    },
-];
-
 const TIPO_COLOR = {
     cultural:  'bg-amber-100 text-amber-700',
     academica: 'bg-teal-100 text-teal-700',
@@ -66,7 +48,7 @@ function ConstanciaCard({ c }) {
     );
 }
 
-export default function Constancias() {
+export default function Constancias({ constancias = [] }) {
     return (
         <AuthenticatedLayout header="Mis Constancias">
             <Head title="Mis Constancias" />
@@ -91,9 +73,9 @@ export default function Constancias() {
                 </div>
 
                 {/* Grid de constancias */}
-                {CONSTANCIAS.length > 0 ? (
+                {constancias.length > 0 ? (
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {CONSTANCIAS.map((c) => <ConstanciaCard key={c.id} c={c} />)}
+                        {constancias.map((c) => <ConstanciaCard key={c.id} c={c} />)}
                     </div>
                 ) : (
                     <div className="card flex flex-col items-center gap-3 py-16 text-center">

@@ -181,4 +181,122 @@ class AlumnoActividadesTest extends TestCase
         $this->assertEquals($act2->id, $inscActive[0]['actividad_id']);
         $this->assertEquals('en_curso', $inscActive[0]['estatus']);
     }
+
+    /**
+     * Test that student can view their history page.
+     */
+    public function test_student_can_view_their_historial(): void
+    {
+        $user = User::factory()->create(['rol' => 'alumno']);
+        $alumno = Alumno::create([
+            'user_id' => $user->id,
+            'matricula' => '210045',
+            'nombre' => 'Juan',
+            'apellido_paterno' => 'Pérez',
+            'apellido_materno' => 'Ramírez',
+            'carrera' => 'Sistemas',
+            'semestre' => 4,
+            'creditos_acumulados' => 3,
+        ]);
+
+        $docenteUser = User::factory()->create(['rol' => 'docente']);
+        $docente = Docente::create([
+            'user_id' => $docenteUser->id,
+            'numero_empleado' => 'DOC123',
+            'nombre' => 'Roberto',
+            'apellido_paterno' => 'Méndez',
+            'apellido_materno' => 'Martínez',
+        ]);
+
+        $act1 = Actividad::create([
+            'docente_id' => $docente->id,
+            'nombre' => 'Taller de Ajedrez Básico',
+            'descripcion' => 'Ajedrez',
+            'creditos' => 1,
+            'cupo_maximo' => 20,
+            'horario' => 'Mar y Jue, 16:00 – 18:00 hrs',
+            'tipo_periodo' => 'semestral',
+        ]);
+
+        $insc = Inscripcion::create([
+            'alumno_id' => $alumno->id,
+            'actividad_id' => $act1->id,
+            'horas_acumuladas' => 0,
+            'estatus' => 'acreditado',
+        ]);
+
+        $response = $this->actingAs($user)->get('/historial');
+
+        $response->assertOk();
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('Alumno/Historial')
+            ->has('historial', 1)
+            ->has('alumno', fn (Assert $a) => $a
+                ->where('creditos_acumulados', 3)
+                ->where('nombre', 'Juan Pérez')
+            )
+        );
+
+        $historial = $response->original->getData()['page']['props']['historial'];
+        $this->assertEquals('deportiva', $historial[0]['tipo']);
+        $this->assertEquals('acreditado', $historial[0]['estatus']);
+        $this->assertNotNull($historial[0]['folio']);
+    }
+
+    /**
+     * Test that student can view their certificates page.
+     */
+    public function test_student_can_view_their_constancias(): void
+    {
+        $user = User::factory()->create(['rol' => 'alumno']);
+        $alumno = Alumno::create([
+            'user_id' => $user->id,
+            'matricula' => '210045',
+            'nombre' => 'Juan',
+            'apellido_paterno' => 'Pérez',
+            'apellido_materno' => 'Ramírez',
+            'carrera' => 'Sistemas',
+            'semestre' => 4,
+            'creditos_acumulados' => 1,
+        ]);
+
+        $docenteUser = User::factory()->create(['rol' => 'docente']);
+        $docente = Docente::create([
+            'user_id' => $docenteUser->id,
+            'numero_empleado' => 'DOC123',
+            'nombre' => 'Roberto',
+            'apellido_paterno' => 'Méndez',
+            'apellido_materno' => 'Martínez',
+        ]);
+
+        $act1 = Actividad::create([
+            'docente_id' => $docente->id,
+            'nombre' => 'Taller de Danza Folklórica',
+            'descripcion' => 'Danza',
+            'creditos' => 1,
+            'cupo_maximo' => 20,
+            'horario' => 'Mar y Jue, 16:00 – 18:00 hrs',
+            'tipo_periodo' => 'semestral',
+        ]);
+
+        $insc = Inscripcion::create([
+            'alumno_id' => $alumno->id,
+            'actividad_id' => $act1->id,
+            'horas_acumuladas' => 0,
+            'estatus' => 'acreditado',
+        ]);
+
+        $response = $this->actingAs($user)->get('/constancias');
+
+        $response->assertOk();
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('Alumno/Constancias')
+            ->has('constancias', 1)
+        );
+
+        $constancias = $response->original->getData()['page']['props']['constancias'];
+        $this->assertEquals('cultural', $constancias[0]['tipo']);
+        $this->assertEquals(1, $constancias[0]['creditos']);
+        $this->assertNotNull($constancias[0]['folio']);
+    }
 }

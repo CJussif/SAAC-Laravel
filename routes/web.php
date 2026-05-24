@@ -5,6 +5,8 @@ use App\Http\Controllers\AlumnoActividadesController;
 use App\Http\Controllers\InscripcionController;
 use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\AdminActividadController;
+use App\Http\Controllers\AlumnoEvidenciaController;
+use App\Http\Controllers\AdminEvidenciaController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -30,9 +32,10 @@ Route::middleware('auth')->group(function () {
     // Alumno
     Route::get('/actividades', [AlumnoActividadesController::class, 'index'])->name('actividades.index');
     Route::post('/inscripciones', [InscripcionController::class, 'store'])->name('inscripciones.store');
-    Route::get('/constancias',       fn () => Inertia::render('Alumno/Constancias'))->name('constancias.index');
-    Route::get('/historial',         fn () => Inertia::render('Alumno/Historial'))->name('historial.index');
-    Route::get('/subir-evidencia',   fn () => Inertia::render('Alumno/CargaEvidencias'))->name('evidencias.create');
+    Route::get('/constancias', [AlumnoActividadesController::class, 'constancias'])->name('constancias.index');
+    Route::get('/historial', [AlumnoActividadesController::class, 'historial'])->name('historial.index');
+    Route::get('/subir-evidencia', [AlumnoEvidenciaController::class, 'create'])->name('evidencias.create');
+    Route::post('/subir-evidencia', [AlumnoEvidenciaController::class, 'store'])->name('evidencias.store');
 
     // Docente
     Route::get('/asistencia', [AsistenciaController::class, 'index'])->name('asistencia.index');
@@ -46,7 +49,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin/catalogo', [AdminActividadController::class, 'store'])->name('admin.catalogo.store');
     Route::put('/admin/catalogo/{actividad}', [AdminActividadController::class, 'update'])->name('admin.catalogo.update');
     Route::delete('/admin/catalogo/{actividad}', [AdminActividadController::class, 'destroy'])->name('admin.catalogo.destroy');
-    Route::get('/admin/evidencias',  fn () => Inertia::render('Admin/Evidencias'))->name('admin.evidencias');
+    Route::get('/admin/evidencias', [AdminEvidenciaController::class, 'index'])->name('admin.evidencias');
+    Route::post('/admin/evidencias/{solicitud}/validar', [AdminEvidenciaController::class, 'validar'])->name('admin.evidencias.validar');
     Route::get('/admin/alumnos',     fn () => Inertia::render('Admin/Alumnos'))->name('admin.alumnos');
     Route::get('/admin/constancias', fn () => Inertia::render('Admin/Constancias'))->name('admin.constancias');
 });

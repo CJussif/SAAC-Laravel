@@ -6,6 +6,7 @@ use App\Models\Actividad;
 use App\Models\Inscripcion;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Carbon\Carbon;
 
 class AlumnoActividadesController extends Controller
 {
@@ -143,5 +144,115 @@ class AlumnoActividadesController extends Controller
             default:
                 return 'from-teal-500 to-teal-700';
         }
+    }
+
+    /**
+     * Display the student's enrollment history.
+     */
+    public function historial(Request $request)
+    {
+        $user = $request->user();
+        if (!$user || $user->rol !== 'alumno' || !$user->alumno) {
+            return redirect()->route('dashboard');
+        }
+
+        $alumno = $user->alumno;
+
+        // Fetch all registrations belonging to the student
+        $inscripciones = Inscripcion::with(['actividad.docente', 'asistencias'])
+            ->where('alumno_id', $alumno->id)
+            ->get();
+
+        $historial = $inscripciones->map(function ($inscripcion) {
+            $actividad = $inscripcion->actividad;
+            $tipo = $this->getTipoByNombre($actividad->nombre);
+            $clave = $this->getClave($tipo, $actividad->id);
+
+            // Semestre formatting e.g. "2026 / Primavera" or "2026 / Intersemestral"
+            $year = Carbon::parse($inscripcion->created_at)->format('Y');
+            $periodoStr = $actividad->tipo_periodo === 'semestral' ? 'Semestral' : 'Intersemestral';
+            $semestre = "{$year} / {$periodoStr}";
+
+            // Calculate attendance percentage
+            $totalClases = $inscripcion->asistencias->count();
+            if ($totalClases > 0) {
+                $asistioCount = $inscripcion->asistencias->where('asistio', true)->count();
+                $asistencia = (int) round(($asistioCount / $totalClases) * 100);
+            } else {
+                $asistencia = 0;
+            }
+
+            // Instructor name
+            $instructor = $actividad->docente
+                ? $actividad->docente->nombre . " " . $actividad->docente->apellido_paterno
+                : "Sin docente asignado";
+
+            // Folio (optional, e.g. CON-2026-0001)
+            $folio = null;
+            if ($inscripcion->estatus === 'acreditado') {
+                $folio = "CON-" . Carbon::parse($inscripcion->updated_at)->format('Y') . "-" . sprintf('%04d', $inscripcion->id);
+            }
+
+            return [
+                'id' => $inscripcion->id,
+                'clave' => $clave,
+                'tipo' => $tipo,
+                'nombre' => $actividad->nombre,
+                'instructor' => $instructor,
+                'semestre' => $semestre,
+                'creditos' => $actividad->creditos,
+                'asistencia' => $asistencia,
+                'estatus' => $inscripcion->estatus,
+                'folio' => $folio,
+            ];
+        })->toArray();
+
+        return Inertia::render('Alumno/Historial', [
+            'historial' => $historial,
+            'alumno' => [
+                'creditos_acumulados' => $alumno->creditos_acumulados,
+                'nombre' => $alumno->nombre . ' ' . $alumno->apellido_paterno,
+            ]
+        ]);
+    }
+
+    /**
+     * Display the student's accredited complementary activity certificates.
+     */
+    public function constancias(Request $request)
+    {
+        $user = $request->user();
+        if (!$user || $user->rol !== 'alumno' || !$user->alumno) {
+            return redirect()->route('dashboard');
+        }
+
+        $alumno = $user->alumno;
+
+        // Fetch accredited enrollments
+        $inscripciones = Inscripcion::with(['actividad'])
+            ->where('alumno_id', $alumno->id)
+            ->where('estatus', 'acreditado')
+            ->get();
+
+        $constancias = $inscripciones->map(function ($inscripcion) {
+            $actividad = $inscripcion->actividad;
+            $tipo = $this->getTipoByNombre($actividad->nombre);
+
+            $folio = "CON-" . Carbon::parse($inscripcion->updated_at)->format('Y') . "-" . sprintf('%04d', $inscripcion->id);
+            $completado = Carbon::parse($inscripcion->updated_at)->translatedFormat('d M Y');
+
+            return [
+                'id' => $inscripcion->id,
+                'folio' => $folio,
+                'nombre' => $actividad->nombre,
+                'completado' => $completado,
+                'creditos' => $actividad->creditos,
+                'tipo' => $tipo,
+            ];
+        })->toArray();
+
+        return Inertia::render('Alumno/Constancias', [
+            'constancias' => $constancias,
+        ]);
     }
 }

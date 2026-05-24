@@ -2,44 +2,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import TipoBadge from '@/Components/TipoBadge';
 import { Head } from '@inertiajs/react';
 
-const CREDITOS_META = 5;
-const CREDITOS_ACUMULADOS = 3;
-
-const HISTORIAL = [
-    {
-        id: 1, clave: 'CUL-07', tipo: 'cultural',
-        nombre: 'Taller de Danza Folklórica',
-        instructor: 'Lic. Roberto Méndez',
-        semestre: '2023-2024 / Primavera',
-        creditos: 1, asistencia: 92, estatus: 'acreditado',
-        folio: 'CON-2024-0012',
-    },
-    {
-        id: 2, clave: 'DEP-01', tipo: 'deportiva',
-        nombre: 'Taller de Yoga y Meditación',
-        instructor: 'Inst. María Elena Rojas',
-        semestre: '2024-2025 / Otoño',
-        creditos: 1, asistencia: 88, estatus: 'acreditado',
-        folio: 'CON-2024-0047',
-    },
-    {
-        id: 3, clave: 'ACA-08', tipo: 'academica',
-        nombre: 'Programación Competitiva Avanzada',
-        instructor: 'Dr. Roberto Sandoval',
-        semestre: '2024-2025 / Otoño',
-        creditos: 1, asistencia: 95, estatus: 'acreditado',
-        folio: 'CON-2025-0003',
-    },
-    {
-        id: 4, clave: 'CUL-12', tipo: 'cultural',
-        nombre: 'Taller de Teatro Clásico',
-        instructor: 'Mtra. Laura Vega',
-        semestre: '2024-2025 / Primavera',
-        creditos: 2, asistencia: 70, estatus: 'en-curso',
-        folio: null,
-    },
-];
-
 function AsistenciaBar({ pct }) {
     const color = pct >= 80 ? 'bg-green-500' : pct >= 60 ? 'bg-amber-500' : 'bg-red-500';
     return (
@@ -52,8 +14,8 @@ function AsistenciaBar({ pct }) {
     );
 }
 
-function CreditosRueda() {
-    const pct = (CREDITOS_ACUMULADOS / CREDITOS_META) * 100;
+function CreditosRueda({ acumulados, meta = 5 }) {
+    const pct = (acumulados / meta) * 100;
     const radio = 44;
     const circunferencia = 2 * Math.PI * radio;
     const dash = (pct / 100) * circunferencia;
@@ -70,10 +32,10 @@ function CreditosRueda() {
                     transform="rotate(-90 55 55)"
                 />
                 <text x="55" y="50" textAnchor="middle" className="font-bold" fill="#1F2937" fontSize="22" fontWeight="700">
-                    {CREDITOS_ACUMULADOS}
+                    {acumulados}
                 </text>
                 <text x="55" y="66" textAnchor="middle" fill="#9CA3AF" fontSize="11">
-                    de {CREDITOS_META}
+                    de {meta}
                 </text>
             </svg>
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Créditos</p>
@@ -81,9 +43,11 @@ function CreditosRueda() {
     );
 }
 
-export default function Historial() {
-    const acreditados = HISTORIAL.filter((h) => h.estatus === 'acreditado');
-    const enCurso = HISTORIAL.filter((h) => h.estatus === 'en-curso');
+export default function Historial({ historial = [], alumno = {} }) {
+    const creditosMeta = 5;
+    const creditosAcumulados = alumno?.creditos_acumulados ?? 0;
+    const acreditados = historial.filter((h) => h.estatus === 'acreditado');
+    const enCurso = historial.filter((h) => h.estatus === 'en_curso' || h.estatus === 'inscrito');
 
     return (
         <AuthenticatedLayout header="Mi Historial">
@@ -103,7 +67,7 @@ export default function Historial() {
                         Progreso de Créditos Complementarios
                     </h2>
                     <div className="flex flex-wrap items-center gap-8">
-                        <CreditosRueda />
+                        <CreditosRueda acumulados={creditosAcumulados} meta={creditosMeta} />
 
                         <div className="flex-1 space-y-3 min-w-48">
                             {/* Barra grande */}
@@ -111,13 +75,13 @@ export default function Historial() {
                                 <div className="mb-1.5 flex justify-between text-xs">
                                     <span className="font-semibold text-gray-600">Progreso general</span>
                                     <span className="text-guinda font-bold">
-                                        {CREDITOS_ACUMULADOS} / {CREDITOS_META} créditos
+                                        {creditosAcumulados} / {creditosMeta} créditos
                                     </span>
                                 </div>
                                 <div className="h-3 w-full rounded-full bg-cream-300">
                                     <div
                                         className="h-3 rounded-full bg-guinda transition-all"
-                                        style={{ width: `${(CREDITOS_ACUMULADOS / CREDITOS_META) * 100}%` }}
+                                        style={{ width: `${(creditosAcumulados / creditosMeta) * 100}%` }}
                                     />
                                 </div>
                             </div>
@@ -133,7 +97,7 @@ export default function Historial() {
                                     <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-wide text-gray-400">En Curso</p>
                                 </div>
                                 <div className="rounded-lg bg-cream-100 p-3 text-center">
-                                    <p className="text-xl font-bold text-gray-600">{CREDITOS_META - CREDITOS_ACUMULADOS}</p>
+                                    <p className="text-xl font-bold text-gray-600">{Math.max(0, creditosMeta - creditosAcumulados)}</p>
                                     <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-wide text-gray-400">Faltantes</p>
                                 </div>
                             </div>
@@ -143,16 +107,16 @@ export default function Historial() {
                         <div className="flex flex-col items-center gap-2 rounded-xl border-2 border-dashed border-cream-400 px-6 py-4">
                             <div className={[
                                 'flex h-12 w-12 items-center justify-center rounded-full text-xl',
-                                CREDITOS_ACUMULADOS >= CREDITOS_META
+                                creditosAcumulados >= creditosMeta
                                     ? 'bg-green-100 text-green-600'
                                     : 'bg-cream-200 text-gray-400',
                             ].join(' ')}>
-                                {CREDITOS_ACUMULADOS >= CREDITOS_META ? '✓' : '○'}
+                                {creditosAcumulados >= creditosMeta ? '✓' : '○'}
                             </div>
                             <p className="text-center text-xs font-semibold text-gray-500">
-                                {CREDITOS_ACUMULADOS >= CREDITOS_META
+                                {creditosAcumulados >= creditosMeta
                                     ? 'Requisito cumplido'
-                                    : `Faltan ${CREDITOS_META - CREDITOS_ACUMULADOS} crédito${CREDITOS_META - CREDITOS_ACUMULADOS > 1 ? 's' : ''}`}
+                                    : `Faltan ${creditosMeta - creditosAcumulados} crédito${creditosMeta - creditosAcumulados > 1 ? 's' : ''}`}
                             </p>
                         </div>
                     </div>
@@ -176,34 +140,42 @@ export default function Historial() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-cream-300">
-                                {HISTORIAL.map((item) => (
-                                    <tr key={item.id} className="hover:bg-cream-50 transition-colors">
-                                        <td className="px-5 py-3.5 font-mono text-xs font-semibold text-gray-500">{item.clave}</td>
-                                        <td className="px-5 py-3.5 whitespace-nowrap">
-                                            <p className="font-medium text-gray-800">{item.nombre}</p>
-                                            <p className="text-xs text-gray-400">{item.instructor}</p>
-                                        </td>
-                                        <td className="px-5 py-3.5"><TipoBadge tipo={item.tipo} /></td>
-                                        <td className="px-5 py-3.5 text-xs text-gray-500 whitespace-nowrap">{item.semestre}</td>
-                                        <td className="px-5 py-3.5 whitespace-nowrap">
-                                            {item.estatus === 'en-curso'
-                                                ? <span className="text-xs text-gray-400 italic">En progreso</span>
-                                                : <AsistenciaBar pct={item.asistencia} />
-                                            }
-                                        </td>
-                                        <td className="px-5 py-3.5 text-center">
-                                            <span className="font-bold text-gray-700">{item.creditos}</span>
-                                        </td>
-                                        <td className="px-5 py-3.5"><TipoBadge estatus={item.estatus} /></td>
-                                        <td className="px-5 py-3.5">
-                                            {item.folio ? (
-                                                <span className="font-mono text-xs text-guinda font-medium">{item.folio}</span>
-                                            ) : (
-                                                <span className="text-xs text-gray-300 italic">—</span>
-                                            )}
+                                {historial.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="8" className="px-5 py-8 text-center text-gray-500 bg-cream-50 italic">
+                                            Aún no tienes registro de actividades complementarias.
                                         </td>
                                     </tr>
-                                ))}
+                                ) : (
+                                    historial.map((item) => (
+                                        <tr key={item.id} className="hover:bg-cream-50 transition-colors">
+                                            <td className="px-5 py-3.5 font-mono text-xs font-semibold text-gray-500">{item.clave}</td>
+                                            <td className="px-5 py-3.5 whitespace-nowrap">
+                                                <p className="font-medium text-gray-800">{item.nombre}</p>
+                                                <p className="text-xs text-gray-400">{item.instructor}</p>
+                                            </td>
+                                            <td className="px-5 py-3.5"><TipoBadge tipo={item.tipo} /></td>
+                                            <td className="px-5 py-3.5 text-xs text-gray-500 whitespace-nowrap">{item.semestre}</td>
+                                            <td className="px-5 py-3.5 whitespace-nowrap">
+                                                {item.estatus === 'en_curso' || item.estatus === 'inscrito'
+                                                    ? <span className="text-xs text-gray-400 italic">En progreso</span>
+                                                    : <AsistenciaBar pct={item.asistencia} />
+                                                }
+                                            </td>
+                                            <td className="px-5 py-3.5 text-center">
+                                                <span className="font-bold text-gray-700">{item.creditos}</span>
+                                            </td>
+                                            <td className="px-5 py-3.5"><TipoBadge estatus={item.estatus} /></td>
+                                            <td className="px-5 py-3.5">
+                                                {item.folio ? (
+                                                    <span className="font-mono text-xs text-guinda font-medium">{item.folio}</span>
+                                                ) : (
+                                                    <span className="text-xs text-gray-300 italic">—</span>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
                             </tbody>
                         </table>
                     </div>
