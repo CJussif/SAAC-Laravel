@@ -53,6 +53,11 @@ class HandleInertiaRequests extends Middleware
                     'cuposInscritos' => \App\Models\Inscripcion::whereIn('estatus', ['inscrito', 'en_curso'])->count(),
                 ] : null,
             ],
+            'flash' => [
+                'success' => $request->session()->get('success'),
+                'error' => $request->session()->get('error'),
+                'status' => $request->session()->get('status'),
+            ],
         ];
     }
 }

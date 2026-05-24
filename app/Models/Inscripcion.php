@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Inscripcion extends Model
 {
@@ -19,13 +21,18 @@ class Inscripcion extends Model
         'ruta_constancia'
     ];
 
-    public function alumno()
+    public function alumno(): BelongsTo
     {
         return $this->belongsTo(Alumno::class, 'alumno_id');
     }
 
-    public function actividad()
+    public function actividad(): BelongsTo
     {
         return $this->belongsTo(Actividad::class, 'actividad_id');
+    }
+
+    public function asistencias(): HasMany
+    {
+        return $this->hasMany(Asistencia::class, 'inscripcion_id');
     }
 }
