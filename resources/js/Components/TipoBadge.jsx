@@ -12,7 +12,7 @@ const ESTATUS = {
     'en_curso': { label: 'En Curso',      cls: 'badge-en-curso' },
     'en-curso': { label: 'En Curso',      cls: 'badge-en-curso' },
     'en curso': { label: 'En Curso',      cls: 'badge-en-curso' },
-    reprobado:  { label: 'No Acreditado', cls: 'badge-pendiente' },
+    reprobado:  { label: 'No Acreditado', cls: 'badge-reprobado' },
 };
 
 export default function TipoBadge({ tipo, estatus }) {

@@ -35,4 +35,9 @@ class Alumno extends Model
                     ->withPivot('horas_acumuladas', 'estatus', 'ruta_constancia')
                     ->withTimestamps();
     }
+
+    public function solicitudes(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Solicitud::class, 'alumno_id');
+    }
 }

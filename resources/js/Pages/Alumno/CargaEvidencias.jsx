@@ -1,9 +1,13 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { UploadIcon } from '@/Components/Icons';
 
-const TIPOS = ['Deportiva', 'Cultural', 'Académica'];
+const TIPOS = [
+    { value: 'deportiva', label: 'Deportiva' },
+    { value: 'cultural', label: 'Cultural' },
+    { value: 'academica', label: 'Académica' }
+];
 
 const REQUISITOS = [
     'El archivo debe ser PDF, JPG o PNG (máximo 5 MB).',
@@ -12,7 +16,7 @@ const REQUISITOS = [
     'No se aceptan documentos con correcciones o alteraciones.',
 ];
 
-function DropZone({ file, onFile }) {
+function DropZone({ file, onFile, error }) {
     const [drag, setDrag] = useState(false);
 
     const handleDrop = (e) => {
@@ -23,102 +27,104 @@ function DropZone({ file, onFile }) {
     };
 
     return (
-        <label
-            className={[
-                'flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed px-6 py-10 transition-colors',
-                drag
-                    ? 'border-guinda bg-guinda/5'
-                    : file
-                        ? 'border-green-400 bg-green-50'
-                        : 'border-cream-400 bg-cream-50 hover:border-guinda/50 hover:bg-cream-100',
-            ].join(' ')}
-            onDragOver={(e) => { e.preventDefault(); setDrag(true); }}
-            onDragLeave={() => setDrag(false)}
-            onDrop={handleDrop}
-        >
-            <input
-                type="file"
-                className="sr-only"
-                accept=".pdf,.jpg,.jpeg,.png"
-                onChange={(e) => onFile(e.target.files[0])}
-            />
+        <div className="space-y-1.5">
+            <label
+                className={[
+                    'flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed px-6 py-10 transition-colors',
+                    drag
+                        ? 'border-guinda bg-guinda/5'
+                        : file
+                            ? 'border-green-400 bg-green-50'
+                            : error
+                                ? 'border-red-400 bg-red-50 hover:border-red-500'
+                                : 'border-cream-400 bg-cream-50 hover:border-guinda/50 hover:bg-cream-100',
+                ].join(' ')}
+                onDragOver={(e) => { e.preventDefault(); setDrag(true); }}
+                onDragLeave={() => setDrag(false)}
+                onDrop={handleDrop}
+            >
+                <input
+                    type="file"
+                    className="sr-only"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    onChange={(e) => onFile(e.target.files[0])}
+                />
 
-            {file ? (
-                <>
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600 text-xl">
-                        ✓
-                    </div>
-                    <div className="text-center">
-                        <p className="text-sm font-semibold text-gray-800">{file.name}</p>
-                        <p className="text-xs text-gray-400">{(file.size / 1024).toFixed(0)} KB · Listo para subir</p>
-                    </div>
-                    <button
-                        type="button"
-                        onClick={(e) => { e.preventDefault(); onFile(null); }}
-                        className="text-xs font-medium text-gray-400 underline hover:text-guinda"
-                    >
-                        Cambiar archivo
-                    </button>
-                </>
-            ) : (
-                <>
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cream-200 text-gray-400">
-                        <UploadIcon />
-                    </div>
-                    <div className="text-center">
-                        <p className="text-sm font-semibold text-gray-700">
-                            Arrastra tu archivo aquí
-                        </p>
-                        <p className="mt-0.5 text-xs text-gray-400">o haz clic para seleccionarlo</p>
-                    </div>
-                    <p className="text-[11px] text-gray-400">PDF, JPG o PNG · Máx. 5 MB</p>
-                </>
+                {file ? (
+                    <>
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600 text-xl font-bold">
+                            ✓
+                        </div>
+                        <div className="text-center">
+                            <p className="text-sm font-semibold text-gray-800 truncate max-w-[200px]">{file.name}</p>
+                            <p className="text-xs text-gray-400">{(file.size / 1024).toFixed(0)} KB · Listo para subir</p>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={(e) => { e.preventDefault(); onFile(null); }}
+                            className="text-xs font-medium text-gray-400 underline hover:text-guinda"
+                        >
+                            Cambiar archivo
+                        </button>
+                    </>
+                ) : (
+                    <>
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cream-200 text-gray-400">
+                            <UploadIcon />
+                        </div>
+                        <div className="text-center">
+                            <p className="text-sm font-semibold text-gray-700">
+                                Arrastra tu archivo aquí
+                            </p>
+                            <p className="mt-0.5 text-xs text-gray-400">o haz clic para seleccionarlo</p>
+                        </div>
+                        <p className="text-[11px] text-gray-400">PDF, JPG o PNG · Máx. 5 MB</p>
+                    </>
+                )}
+            </label>
+            {error && (
+                <p className="text-xs text-red-600 font-medium">{error}</p>
             )}
-        </label>
+        </div>
     );
 }
 
-export default function CargaEvidencias() {
-    const [file, setFile] = useState(null);
-    const [tipo, setTipo] = useState('');
-    const [enviado, setEnviado] = useState(false);
+export default function CargaEvidencias({ solicitudes = [] }) {
+    const { flash = {} } = usePage().props;
+
+    const { data, setData, post, processing, errors, reset } = useForm({
+        tipo_actividad: '',
+        nombre_actividad: '',
+        institucion: '',
+        fecha_inicio: '',
+        fecha_fin: '',
+        horas: '',
+        descripcion: '',
+        archivo: null,
+    });
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setEnviado(true);
+        post(route('evidencias.store'), {
+            onSuccess: () => {
+                reset();
+            }
+        });
     };
-
-    if (enviado) {
-        return (
-            <AuthenticatedLayout header="Subir Evidencia">
-                <Head title="Subir Evidencia" />
-                <div className="flex flex-col items-center justify-center py-24 gap-5">
-                    <div className="flex h-20 w-20 items-center justify-center rounded-full bg-green-100 text-4xl text-green-600">
-                        ✓
-                    </div>
-                    <div className="text-center">
-                        <h2 className="text-xl font-bold text-gray-800">Evidencia enviada correctamente</h2>
-                        <p className="mt-2 text-sm text-gray-500">
-                            Tu solicitud ha sido registrada y está pendiente de revisión por el área de SAAC.
-                            Recibirás una notificación cuando sea validada.
-                        </p>
-                    </div>
-                    <button
-                        onClick={() => { setEnviado(false); setFile(null); setTipo(''); }}
-                        className="btn-guinda"
-                    >
-                        Enviar otra evidencia
-                    </button>
-                </div>
-            </AuthenticatedLayout>
-        );
-    }
 
     return (
         <AuthenticatedLayout header="Subir Evidencia">
             <Head title="Subir Evidencia" />
 
             <div className="space-y-6">
+                {/* Banner de Éxito */}
+                {flash.success && (
+                    <div className="flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-800 shadow-sm animate-fade-in">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-100 text-green-600 font-bold text-xs">✓</span>
+                        <div className="flex-1 font-medium">{flash.success}</div>
+                    </div>
+                )}
+
                 <div>
                     <h1 className="text-2xl font-bold text-gray-800">Subir Evidencia Externa</h1>
                     <p className="mt-1 text-sm text-gray-500">
@@ -128,7 +134,7 @@ export default function CargaEvidencias() {
 
                 <div className="flex flex-col gap-6 lg:flex-row">
                     {/* ── Formulario ─────────────────────────── */}
-                    <form onSubmit={handleSubmit} className="card flex-1 space-y-5 p-6">
+                    <form onSubmit={handleSubmit} className="card flex-1 space-y-5 p-6 bg-white">
                         <h2 className="text-sm font-bold uppercase tracking-wide text-gray-500">
                             Datos de la Actividad
                         </h2>
@@ -141,20 +147,23 @@ export default function CargaEvidencias() {
                             <div className="flex gap-2">
                                 {TIPOS.map((t) => (
                                     <button
-                                        key={t}
+                                        key={t.value}
                                         type="button"
-                                        onClick={() => setTipo(t)}
+                                        onClick={() => setData('tipo_actividad', t.value)}
                                         className={[
                                             'flex-1 rounded-lg border py-2 text-sm font-semibold transition-all',
-                                            tipo === t
-                                                ? 'border-guinda bg-guinda text-white'
+                                            data.tipo_actividad === t.value
+                                                ? 'border-guinda bg-guinda text-white shadow-sm'
                                                 : 'border-cream-400 bg-white text-gray-600 hover:border-guinda/40',
                                         ].join(' ')}
                                     >
-                                        {t}
+                                        {t.label}
                                     </button>
                                 ))}
                             </div>
+                            {errors.tipo_actividad && (
+                                <p className="mt-1 text-xs text-red-600 font-medium">{errors.tipo_actividad}</p>
+                            )}
                         </div>
 
                         {/* Nombre de la actividad */}
@@ -166,9 +175,17 @@ export default function CargaEvidencias() {
                                 id="nombre_actividad"
                                 type="text"
                                 required
+                                value={data.nombre_actividad}
+                                onChange={(e) => setData('nombre_actividad', e.target.value)}
                                 placeholder="Ej. Torneo Regional de Ajedrez"
-                                className="w-full rounded-lg border border-cream-400 bg-white px-3 py-2 text-sm placeholder-gray-400 focus:border-guinda focus:outline-none focus:ring-1 focus:ring-guinda/30"
+                                className={[
+                                    'w-full rounded-lg border bg-white px-3 py-2 text-sm placeholder-gray-400 focus:border-guinda focus:outline-none focus:ring-1 focus:ring-guinda/30',
+                                    errors.nombre_actividad ? 'border-red-400' : 'border-cream-400'
+                                ].join(' ')}
                             />
+                            {errors.nombre_actividad && (
+                                <p className="mt-1 text-xs text-red-600 font-medium">{errors.nombre_actividad}</p>
+                            )}
                         </div>
 
                         {/* Institución */}
@@ -180,9 +197,17 @@ export default function CargaEvidencias() {
                                 id="institucion"
                                 type="text"
                                 required
+                                value={data.institucion}
+                                onChange={(e) => setData('institucion', e.target.value)}
                                 placeholder="Ej. UNAM, SEP, CONADE..."
-                                className="w-full rounded-lg border border-cream-400 bg-white px-3 py-2 text-sm placeholder-gray-400 focus:border-guinda focus:outline-none focus:ring-1 focus:ring-guinda/30"
+                                className={[
+                                    'w-full rounded-lg border bg-white px-3 py-2 text-sm placeholder-gray-400 focus:border-guinda focus:outline-none focus:ring-1 focus:ring-guinda/30',
+                                    errors.institucion ? 'border-red-400' : 'border-cream-400'
+                                ].join(' ')}
                             />
+                            {errors.institucion && (
+                                <p className="mt-1 text-xs text-red-600 font-medium">{errors.institucion}</p>
+                            )}
                         </div>
 
                         {/* Fechas */}
@@ -195,8 +220,16 @@ export default function CargaEvidencias() {
                                     id="fecha_inicio"
                                     type="date"
                                     required
-                                    className="w-full rounded-lg border border-cream-400 bg-white px-3 py-2 text-sm text-gray-700 focus:border-guinda focus:outline-none focus:ring-1 focus:ring-guinda/30"
+                                    value={data.fecha_inicio}
+                                    onChange={(e) => setData('fecha_inicio', e.target.value)}
+                                    className={[
+                                        'w-full rounded-lg border bg-white px-3 py-2 text-sm text-gray-700 focus:border-guinda focus:outline-none focus:ring-1 focus:ring-guinda/30',
+                                        errors.fecha_inicio ? 'border-red-400' : 'border-cream-400'
+                                    ].join(' ')}
                                 />
+                                {errors.fecha_inicio && (
+                                    <p className="mt-1 text-xs text-red-600 font-medium">{errors.fecha_inicio}</p>
+                                )}
                             </div>
                             <div>
                                 <label htmlFor="fecha_fin" className="mb-1.5 block text-sm font-medium text-gray-700">
@@ -206,8 +239,16 @@ export default function CargaEvidencias() {
                                     id="fecha_fin"
                                     type="date"
                                     required
-                                    className="w-full rounded-lg border border-cream-400 bg-white px-3 py-2 text-sm text-gray-700 focus:border-guinda focus:outline-none focus:ring-1 focus:ring-guinda/30"
+                                    value={data.fecha_fin}
+                                    onChange={(e) => setData('fecha_fin', e.target.value)}
+                                    className={[
+                                        'w-full rounded-lg border bg-white px-3 py-2 text-sm text-gray-700 focus:border-guinda focus:outline-none focus:ring-1 focus:ring-guinda/30',
+                                        errors.fecha_fin ? 'border-red-400' : 'border-cream-400'
+                                    ].join(' ')}
                                 />
+                                {errors.fecha_fin && (
+                                    <p className="mt-1 text-xs text-red-600 font-medium">{errors.fecha_fin}</p>
+                                )}
                             </div>
                         </div>
 
@@ -220,9 +261,17 @@ export default function CargaEvidencias() {
                                 id="horas"
                                 type="number"
                                 min="1"
+                                value={data.horas}
+                                onChange={(e) => setData('horas', e.target.value)}
                                 placeholder="Ej. 40"
-                                className="w-full rounded-lg border border-cream-400 bg-white px-3 py-2 text-sm placeholder-gray-400 focus:border-guinda focus:outline-none focus:ring-1 focus:ring-guinda/30"
+                                className={[
+                                    'w-full rounded-lg border bg-white px-3 py-2 text-sm placeholder-gray-400 focus:border-guinda focus:outline-none focus:ring-1 focus:ring-guinda/30',
+                                    errors.horas ? 'border-red-400' : 'border-cream-400'
+                                ].join(' ')}
                             />
+                            {errors.horas && (
+                                <p className="mt-1 text-xs text-red-600 font-medium">{errors.horas}</p>
+                            )}
                         </div>
 
                         {/* Descripción */}
@@ -233,59 +282,110 @@ export default function CargaEvidencias() {
                             <textarea
                                 id="descripcion"
                                 rows={3}
+                                value={data.descripcion}
+                                onChange={(e) => setData('descripcion', e.target.value)}
                                 placeholder="Describe brevemente la actividad y tu participación..."
-                                className="w-full resize-none rounded-lg border border-cream-400 bg-white px-3 py-2 text-sm placeholder-gray-400 focus:border-guinda focus:outline-none focus:ring-1 focus:ring-guinda/30"
+                                className={[
+                                    'w-full resize-none rounded-lg border bg-white px-3 py-2 text-sm placeholder-gray-400 focus:border-guinda focus:outline-none focus:ring-1 focus:ring-guinda/30',
+                                    errors.descripcion ? 'border-red-400' : 'border-cream-400'
+                                ].join(' ')}
                             />
+                            {errors.descripcion && (
+                                <p className="mt-1 text-xs text-red-600 font-medium">{errors.descripcion}</p>
+                            )}
                         </div>
 
                         <div className="border-t border-cream-300 pt-4">
                             <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-gray-500">
                                 Documento Comprobante
                             </h2>
-                            <DropZone file={file} onFile={setFile} />
+                            <DropZone file={data.archivo} onFile={(f) => setData('archivo', f)} error={errors.archivo} />
                         </div>
 
                         <div className="flex justify-end pt-2">
                             <button
                                 type="submit"
-                                disabled={!file || !tipo}
+                                disabled={processing || !data.archivo || !data.tipo_actividad}
                                 className={[
                                     'btn-guinda transition-all',
-                                    (!file || !tipo) && 'cursor-not-allowed opacity-50',
+                                    (processing || !data.archivo || !data.tipo_actividad) && 'cursor-not-allowed opacity-50',
                                 ].join(' ')}
                             >
-                                Enviar Solicitud
+                                {processing ? 'Enviando...' : 'Enviar Solicitud'}
                             </button>
                         </div>
                     </form>
 
                     {/* ── Panel lateral ──────────────────────── */}
-                    <aside className="w-full space-y-4 lg:w-64 lg:flex-shrink-0">
-                        {/* Estado actual */}
-                        <div className="card p-4 space-y-2.5">
-                            <h3 className="text-sm font-bold text-gray-700">Tu Solicitud Actual</h3>
-                            <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-3 space-y-2">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">REF-202604</span>
-                                    <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-[9px] font-bold text-amber-800 uppercase tracking-wide">
-                                        Pendiente
-                                    </span>
-                                </div>
-                                <div>
-                                    <h4 className="text-xs font-bold text-gray-800 truncate">Taller de Innovación y Emprendimiento</h4>
-                                    <p className="mt-0.5 text-[10px] text-gray-400">Coursera (Google Latinoamerica)</p>
-                                </div>
-                                <div className="flex items-center justify-between border-t border-amber-200/50 pt-2 text-[10px] text-gray-500">
-                                    <span>📅 24 de Mayo, 2026</span>
-                                    <a
-                                        href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="font-semibold text-guinda hover:underline"
-                                    >
-                                        Ver Comprobante
-                                    </a>
-                                </div>
+                    <aside className="w-full space-y-4 lg:w-80 lg:flex-shrink-0">
+                        {/* Estado actual / Solicitudes */}
+                        <div className="card p-4 space-y-3">
+                            <h3 className="text-sm font-bold text-gray-700">Tus Solicitudes</h3>
+                            <div className="space-y-3 max-h-[350px] overflow-y-auto sidebar-scroll pr-1">
+                                {solicitudes.length === 0 ? (
+                                    <p className="text-xs text-gray-500 italic py-2 text-center">No tienes solicitudes enviadas.</p>
+                                ) : (
+                                    solicitudes.map((sol) => (
+                                        <div 
+                                            key={sol.id} 
+                                            className={[
+                                                'rounded-xl border p-3.5 space-y-2.5 transition-all hover:shadow-sm bg-white',
+                                                sol.estatus === 'pendiente' 
+                                                    ? 'border-amber-200 bg-amber-50/20' 
+                                                    : sol.estatus === 'aprobada' 
+                                                        ? 'border-green-200 bg-green-50/20' 
+                                                        : 'border-red-200 bg-red-50/20'
+                                            ].join(' ')}
+                                        >
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-[9px] font-mono font-bold text-gray-400 uppercase tracking-wider">
+                                                    REF-{String(sol.id).padStart(4, '0')}
+                                                </span>
+                                                <span className={[
+                                                    'inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide',
+                                                    sol.estatus === 'pendiente' 
+                                                        ? 'bg-amber-100 text-amber-800' 
+                                                        : sol.estatus === 'aprobada' 
+                                                            ? 'bg-green-100 text-green-800' 
+                                                            : 'bg-red-100 text-red-800'
+                                                ].join(' ')}>
+                                                    {sol.estatus === 'pendiente' 
+                                                        ? 'Pendiente' 
+                                                        : sol.estatus === 'aprobada' 
+                                                            ? 'Aprobada' 
+                                                            : 'Rechazada'}
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <h4 className="text-xs font-bold text-gray-800 truncate" title={sol.nombre_actividad}>
+                                                    {sol.nombre_actividad}
+                                                </h4>
+                                                <p className="mt-0.5 text-[10px] text-gray-400 truncate">{sol.institucion}</p>
+                                                {sol.motivo_rechazo && (
+                                                    <p className="mt-2 text-[10px] text-red-600 bg-red-100/50 p-2 rounded border border-red-200/50 font-medium">
+                                                        <strong>Motivo:</strong> {sol.motivo_rechazo}
+                                                    </p>
+                                                )}
+                                                {sol.estatus === 'aprobada' && (
+                                                    <p className="mt-2 text-[10px] text-green-700 bg-green-100/50 p-1.5 rounded border border-green-200/50 font-medium">
+                                                        🎖️ Créditos Otorgados: <strong>{sol.creditos_otorgados}</strong>
+                                                    </p>
+                                                )}
+                                            </div>
+                                            <div className="flex items-center justify-between border-t border-cream-300 pt-2 text-[10px] text-gray-500">
+                                                <span>📅 {sol.fecha_inicio}</span>
+                                                <a
+                                                    href={`/storage/${sol.ruta_archivo}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="font-semibold text-guinda hover:underline"
+                                                >
+                                                    Ver Comprobante
+                                                </a>
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
                             </div>
                         </div>
 
@@ -296,7 +396,7 @@ export default function CargaEvidencias() {
                                 {REQUISITOS.map((r, i) => (
                                     <li key={i} className="flex gap-2 text-xs text-gray-500">
                                         <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-guinda" />
-                                        {r}
+                                        <span>{r}</span>
                                     </li>
                                 ))}
                             </ul>
@@ -316,7 +416,7 @@ export default function CargaEvidencias() {
                                         <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-guinda text-[10px] font-bold text-white">
                                             {step.n}
                                         </span>
-                                        {step.label}
+                                        <span>{step.label}</span>
                                     </li>
                                 ))}
                             </ol>
