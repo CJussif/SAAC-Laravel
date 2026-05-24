@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AlumnoActividadesController;
 use App\Http\Controllers\InscripcionController;
 use App\Http\Controllers\AsistenciaController;
+use App\Http\Controllers\AdminActividadController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -41,7 +42,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/expedientes',  fn () => Inertia::render('Docente/Expedientes'))->name('expedientes.index');
 
     // Admin
-    Route::get('/admin/catalogo',    fn () => Inertia::render('Admin/Catalogo'))->name('admin.catalogo');
+    Route::get('/admin/catalogo', [AdminActividadController::class, 'index'])->name('admin.catalogo');
+    Route::post('/admin/catalogo', [AdminActividadController::class, 'store'])->name('admin.catalogo.store');
+    Route::put('/admin/catalogo/{actividad}', [AdminActividadController::class, 'update'])->name('admin.catalogo.update');
+    Route::delete('/admin/catalogo/{actividad}', [AdminActividadController::class, 'destroy'])->name('admin.catalogo.destroy');
     Route::get('/admin/evidencias',  fn () => Inertia::render('Admin/Evidencias'))->name('admin.evidencias');
     Route::get('/admin/alumnos',     fn () => Inertia::render('Admin/Alumnos'))->name('admin.alumnos');
     Route::get('/admin/constancias', fn () => Inertia::render('Admin/Constancias'))->name('admin.constancias');
