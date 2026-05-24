@@ -6,10 +6,13 @@ const TIPOS = {
 };
 
 const ESTATUS = {
-    acreditado: { label: 'Acreditado', cls: 'badge-acreditado' },
-    pendiente:  { label: 'Pendiente',  cls: 'badge-pendiente' },
-    'en-curso': { label: 'En Curso',   cls: 'badge-en-curso' },
-    'en curso': { label: 'En Curso',   cls: 'badge-en-curso' },
+    acreditado: { label: 'Acreditado',    cls: 'badge-acreditado' },
+    pendiente:  { label: 'Pendiente',     cls: 'badge-pendiente' },
+    inscrito:   { label: 'Inscrito',      cls: 'badge-deportiva' },
+    'en_curso': { label: 'En Curso',      cls: 'badge-en-curso' },
+    'en-curso': { label: 'En Curso',      cls: 'badge-en-curso' },
+    'en curso': { label: 'En Curso',      cls: 'badge-en-curso' },
+    reprobado:  { label: 'No Acreditado', cls: 'badge-pendiente' },
 };
 
 export default function TipoBadge({ tipo, estatus }) {
