@@ -186,7 +186,7 @@ export default function Actividades({ actividades = [], inscripcionesActivas = [
                         <select 
                             value={selectedCategory}
                             onChange={(e) => setSelectedCategory(e.target.value)}
-                            className="rounded-lg border border-cream-400 bg-white px-3 py-2 text-sm text-gray-600 focus:border-guinda focus:outline-none"
+                            className="rounded-lg border border-cream-400 bg-white pl-3 pr-8 py-2 text-sm text-gray-600 focus:border-guinda focus:outline-none"
                         >
                             <option value="Todas">Categoría: Todas</option>
                             <option value="Deportiva">Deportiva</option>
@@ -196,7 +196,7 @@ export default function Actividades({ actividades = [], inscripcionesActivas = [
                         <select 
                             value={selectedStatus}
                             onChange={(e) => setSelectedStatus(e.target.value)}
-                            className="rounded-lg border border-cream-400 bg-white px-3 py-2 text-sm text-gray-600 focus:border-guinda focus:outline-none"
+                            className="rounded-lg border border-cream-400 bg-white pl-3 pr-8 py-2 text-sm text-gray-600 focus:border-guinda focus:outline-none"
                         >
                             <option value="Todos">Estatus: Todos</option>
                             <option value="disponible">Disponible</option>
@@ -289,15 +289,21 @@ export default function Actividades({ actividades = [], inscripcionesActivas = [
                         <ul className="space-y-2 text-xs text-gray-500">
                             <li className="flex gap-2">
                                 <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-guinda" />
-                                Solo puedes inscribirte en un máximo de <strong>dos actividades</strong> por ciclo escolar.
+                                <span>
+                                    Solo puedes inscribirte en un máximo de <strong>dos actividades</strong> por ciclo escolar.
+                                </span>
                             </li>
                             <li className="flex gap-2">
                                 <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-guinda" />
-                                Debes cumplir el <strong>60% de asistencia</strong> para acreditar la actividad.
+                                <span>
+                                    Debes cumplir el <strong>60% de asistencia</strong> para acreditar la actividad.
+                                </span>
                             </li>
                             <li className="flex gap-2">
                                 <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-guinda" />
-                                Las bajas solo se permiten durante las primeras <strong>dos semanas</strong> de inicio del curso.
+                                <span>
+                                    Las bajas solo se permiten durante las primeras <strong>dos semanas</strong> de inicio del curso.
+                                </span>
                             </li>
                         </ul>
                     </div>
