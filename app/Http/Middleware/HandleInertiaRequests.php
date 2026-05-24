@@ -29,10 +29,29 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user = $request->user();
+
+        if ($user) {
+            if ($user->rol === 'alumno') {
+                $user->load(['alumno.actividades' => function ($query) {
+                    $query->withPivot('horas_acumuladas', 'estatus', 'ruta_constancia');
+                }]);
+            } elseif ($user->rol === 'docente') {
+                $user->load('docente.actividades.alumnos');
+            }
+        }
+
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $user,
+                'adminStats' => $user && $user->rol === 'administrador' ? [
+                    'totalAlumnos' => \App\Models\Alumno::count(),
+                    'totalActividades' => \App\Models\Actividad::count(),
+                    'totalInscripciones' => \App\Models\Inscripcion::count(),
+                    'cuposTotales' => \App\Models\Actividad::sum('cupo_maximo'),
+                    'cuposInscritos' => \App\Models\Inscripcion::whereIn('estatus', ['inscrito', 'en_curso'])->count(),
+                ] : null,
             ],
         ];
     }
