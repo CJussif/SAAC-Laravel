@@ -47,4 +47,21 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the Alumno associated with the User.
+     */
+    public function alumno()
+    {
+        return $this->hasOne(Alumno::class, 'user_id');
+    }
+
+    /**
+     * Get the Docente associated with the User.
+     */
+    public function docente()
+    {
+        return $this->hasOne(Docente::class, 'user_id');
+    }
 }
+
