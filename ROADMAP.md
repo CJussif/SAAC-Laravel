@@ -59,6 +59,8 @@ Actualmente en `routes/web.php` existen 4 rutas secundarias que únicamente rend
    * **Objetivo**: Catálogo administrativo para listar todos los estudiantes del instituto, filtrar por carrera o semestre, y permitir modificaciones directas sobre sus créditos acumulados.
 4. **Constancias de Liberación (`/admin/constancias` -> `Admin/Constancias.jsx`)**:
    * **Objetivo**: Generar la **Constancia de Liberación de Actividad Complementaria** final una vez que el alumno acumule los 5 créditos requeridos de manera general. Debe incluir firma digital/folio oficial de la oficina de control escolar.
+5. **Flujo de Registro de Alumnos por Correo Institucional**:
+   * **Objetivo**: Implementar el registro seguro de alumnos. Los correos institucionales autorizados se almacenan previamente en la base de datos. Al alumno se le proporciona un enlace único vinculado a su correo institucional y, al acceder por primera vez, define la contraseña que desea usar para activar su cuenta.
 
 ---
 
