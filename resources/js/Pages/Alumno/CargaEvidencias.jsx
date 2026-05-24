@@ -262,10 +262,23 @@ export default function CargaEvidencias() {
                     {/* ── Panel lateral ──────────────────────── */}
                     <aside className="w-full space-y-4 lg:w-64 lg:flex-shrink-0">
                         {/* Estado actual */}
-                        <div className="card p-4 space-y-2">
+                        <div className="card p-4 space-y-2.5">
                             <h3 className="text-sm font-bold text-gray-700">Tu Solicitud Actual</h3>
-                            <div className="rounded-lg bg-cream-100 p-3 text-xs text-gray-500 text-center">
-                                No tienes solicitudes pendientes de revisión.
+                            <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-3 space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">REF-202604</span>
+                                    <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-[9px] font-bold text-amber-800 uppercase tracking-wide">
+                                        Pendiente
+                                    </span>
+                                </div>
+                                <div>
+                                    <h4 className="text-xs font-bold text-gray-800 truncate">Taller de Innovación y Emprendimiento</h4>
+                                    <p className="mt-0.5 text-[10px] text-gray-400">Coursera (Google Latinoamerica)</p>
+                                </div>
+                                <div className="flex items-center justify-between border-t border-amber-200/50 pt-2 text-[10px] text-gray-500">
+                                    <span>📅 24 de Mayo, 2026</span>
+                                    <span className="font-semibold text-guinda">Ver PDF</span>
+                                </div>
                             </div>
                         </div>
 
