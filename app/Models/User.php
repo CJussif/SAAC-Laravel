@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -51,7 +52,7 @@ class User extends Authenticatable
     /**
      * Get the Alumno associated with the User.
      */
-    public function alumno()
+    public function alumno(): HasOne
     {
         return $this->hasOne(Alumno::class, 'user_id');
     }
@@ -59,7 +60,7 @@ class User extends Authenticatable
     /**
      * Get the Docente associated with the User.
      */
-    public function docente()
+    public function docente(): HasOne
     {
         return $this->hasOne(Docente::class, 'user_id');
     }
