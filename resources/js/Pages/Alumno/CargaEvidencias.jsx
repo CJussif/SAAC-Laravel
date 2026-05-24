@@ -283,7 +283,7 @@ export default function CargaEvidencias() {
                                         rel="noopener noreferrer"
                                         className="font-semibold text-guinda hover:underline"
                                     >
-                                        Ver PDF
+                                        Ver Comprobante
                                     </a>
                                 </div>
                             </div>
