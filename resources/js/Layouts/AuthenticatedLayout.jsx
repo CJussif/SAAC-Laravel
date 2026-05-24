@@ -185,7 +185,7 @@ function Topbar({ user, header }) {
 export default function AuthenticatedLayout({ header, children }) {
     const { auth, ziggy } = usePage().props;
     const user = auth.user;
-    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
+    const currentPath = usePage().url;
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     return (
