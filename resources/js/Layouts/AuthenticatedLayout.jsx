@@ -17,24 +17,24 @@ const ROL_LABEL = {
 
 const NAV = {
     alumno: [
-        { label: 'Panel Principal',         href: route('dashboard'),          icon: HomeIcon },
-        { label: 'Catálogo de Actividades', href: route('actividades.index'),  icon: GridIcon },
-        { label: 'Mi Historial',            href: route('historial.index'),    icon: ClipboardIcon },
-        { label: 'Subir Evidencia',         href: route('evidencias.create'),  icon: UploadIcon },
-        { label: 'Mis Constancias',         href: route('constancias.index'),  icon: DocumentIcon },
+        { label: 'Panel Principal',         routeName: 'dashboard',          icon: HomeIcon },
+        { label: 'Catálogo de Actividades', routeName: 'actividades.index',  icon: GridIcon },
+        { label: 'Mi Historial',            routeName: 'historial.index',    icon: ClipboardIcon },
+        { label: 'Subir Evidencia',         routeName: 'evidencias.create',  icon: UploadIcon },
+        { label: 'Mis Constancias',         routeName: 'constancias.index',  icon: DocumentIcon },
     ],
     docente: [
-        { label: 'Panel Principal', href: route('dashboard'),          icon: HomeIcon },
-        { label: 'Pase de Lista',   href: route('asistencia.index'),   icon: CheckSquareIcon },
-        { label: 'Mis Grupos',      href: route('grupos.index'),       icon: UsersIcon },
-        { label: 'Expedientes',     href: route('expedientes.index'),  icon: ClipboardIcon },
+        { label: 'Panel Principal', routeName: 'dashboard',          icon: HomeIcon },
+        { label: 'Pase de Lista',   routeName: 'asistencia.index',   icon: CheckSquareIcon },
+        { label: 'Mis Grupos',      routeName: 'grupos.index',       icon: UsersIcon },
+        { label: 'Expedientes',     routeName: 'expedientes.index',  icon: ClipboardIcon },
     ],
     administrador: [
-        { label: 'Panel Principal',      href: route('dashboard'),           icon: HomeIcon },
-        { label: 'Catálogo Actividades', href: route('admin.catalogo'),      icon: GridIcon },
-        { label: 'Gestión de Alumnos',   href: route('admin.alumnos'),       icon: UsersIcon },
-        { label: 'Validar Evidencias',   href: route('admin.evidencias'),    icon: CheckCircleIcon },
-        { label: 'Constancias',          href: route('admin.constancias'),   icon: DocumentIcon },
+        { label: 'Panel Principal',      routeName: 'dashboard',           icon: HomeIcon },
+        { label: 'Catálogo Actividades', routeName: 'admin.catalogo',      icon: GridIcon },
+        { label: 'Gestión de Alumnos',   routeName: 'admin.alumnos',       icon: UsersIcon },
+        { label: 'Validar Evidencias',   routeName: 'admin.evidencias',    icon: CheckCircleIcon },
+        { label: 'Constancias',          routeName: 'admin.constancias',   icon: DocumentIcon },
     ],
 };
 
@@ -42,7 +42,7 @@ function SidebarLink({ item, isActive }) {
     const Icon = item.icon;
     return (
         <Link
-            href={item.href}
+            href={route(item.routeName)}
             className={[
                 'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150',
                 isActive
@@ -101,10 +101,10 @@ function Sidebar({ user, currentPath, onClose }) {
             <nav className="sidebar-scroll flex-1 overflow-y-auto px-3 pb-4">
                 <ul className="space-y-0.5">
                     {links.map((item) => (
-                        <li key={item.href}>
+                        <li key={item.routeName}>
                             <SidebarLink
                                 item={item}
-                                isActive={currentPath === item.href || (item.href === route('dashboard') && currentPath === '/dashboard')}
+                                isActive={route().current(item.routeName)}
                             />
                         </li>
                     ))}
