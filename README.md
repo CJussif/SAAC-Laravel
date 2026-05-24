@@ -1,59 +1,114 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SAAC — Sistema de Acreditación de Actividades Complementarias
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+SAAC es una plataforma web integral diseñada para la gestión, control y acreditación de **actividades complementarias universitarias** (deportivas, culturales y académicas) del instituto. El sistema interconecta a estudiantes, docentes y administradores a través de flujos dinámicos controlados por reglas de negocio robustas a nivel de base de datos.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Características Clave
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 🎓 Para Alumnos
+* **Inscripción en Tiempo Real**: Catálogo interactivo con validaciones contra traslapes de horario, límite de inscripciones activas (máximo 2) y capacidad de cupos.
+* **Historial & Constancias**: Avance interactivo de créditos acumulados y descarga de constancias con folios autogenerados para cursos acreditados.
+* **Acreditación Externa**: Carga de evidencias y constancias externas en formato PDF o imagen (JPG/PNG) para revisión administrativa.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 📝 Para Docentes
+* **Pase de Lista Digital**: Control de asistencia diario de lunes a viernes clasificado por periodos semanales.
+* **Cálculo de Porcentaje**: Monitoreo dinámico del porcentaje general de asistencia de cada alumno.
+* **Cierre y Acreditación**: Cierre atómico del grupo donde alumnos con **>= 60% de asistencia** son acreditados de forma automática y sus créditos son abonados a su expediente.
 
-## Learning Laravel
+### ⚙️ Para Administradores
+* **CRUD de Actividades**: Administración del catálogo complementario vinculando docentes e institutos.
+* **Validación de Evidencias**: Tablero de aprobación/rechazo de comprobantes externos cargados por los alumnos con asignación de créditos.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🛠️ Stack Tecnológico
 
-## Laravel Sponsors
+El proyecto está construido sobre un stack moderno y eficiente:
+* **Backend**: [Laravel 12 (PHP 8.4)](https://laravel.com)
+* **Frontend**: [React 19](https://react.dev) con [Inertia.js](https://inertiajs.com) (eliminando la necesidad de APIs REST complejas).
+* **Estilos**: Vanilla CSS y [Tailwind CSS v4](https://tailwindcss.com) (diseño premium y responsive).
+* **Compilador**: [Vite](https://vite.dev)
+* **Base de Datos**: [SQLite](https://www.sqlite.org) (en archivo local para facilidad de desarrollo).
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 💻 Guía de Instalación y Setup
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Sigue estos pasos para ejecutar el proyecto en tu entorno local:
 
-## Contributing
+### 1. Clonar el Repositorio e Instalar Dependencias
+```bash
+git clone https://github.com/TU_USUARIO/SAAC-Laravel.git
+cd SAAC-Laravel
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# Instalar dependencias del Backend (Composer)
+composer install
 
-## Code of Conduct
+# Instalar dependencias del Frontend (npm)
+npm install
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 2. Configurar el Entorno
+Copia el archivo de ejemplo y genera la llave única de la aplicación:
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-## Security Vulnerabilities
+*Nota: Asegúrate de que el archivo `.env` contenga la conexión SQLite:*
+```env
+DB_CONNECTION=sqlite
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 3. Preparar la Base de Datos
+Crea las tablas y puebla la base de datos con los datos semilla (usuarios iniciales y actividades):
+```bash
+php artisan migrate:fresh --seed
+```
 
-## License
+### 4. Ejecutar la Aplicación
+Inicia los servidores de desarrollo. Necesitarás ejecutar estos comandos en terminales separadas o en segundo plano:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+* **Terminal 1 (Servidor PHP):**
+  ```bash
+  php artisan serve
+  ```
+
+* **Terminal 2 (Compilador JS/Vite):**
+  ```bash
+  npm run dev
+  ```
+
+La aplicación estará disponible en tu navegador en: **`http://localhost:8000`**
+
+---
+
+## 🔑 Usuarios de Prueba (Semilla)
+
+Al sembrar la base de datos, se crean cuentas preconfiguradas para probar los diferentes dashboards:
+
+| Rol | Correo Electrónico | Contraseña | Vista / Dashboard |
+|---|---|---|---|
+| **Estudiante** | `alumno@tescha.edu.mx` | `saac1234` | Panel del Alumno, Catálogo e Historial |
+| **Docente** | `docente@tescha.edu.mx` | `saac1234` | Panel del Docente y Pase de Lista |
+| **Administrador** | `admin@tescha.edu.mx` | `saac1234` | Panel Global, Catálogo CRUD y Evidencias |
+
+---
+
+## 🧪 Pruebas Automatizadas
+
+El sistema cuenta con una cobertura de pruebas de integración robusta que evalúa todas las restricciones de inscripción, asistencia, transacciones atómicas y cargas de evidencias:
+
+```bash
+# Ejecutar todas las pruebas del sistema
+./vendor/bin/phpunit
+```
+
+---
+
+## 📖 Documentación para Desarrolladores
+
+Para comprender a fondo la arquitectura, el diseño de la base de datos y la integración de endpoints, consulta las guías dedicadas:
+1. **[Manual de Arquitectura y Reglas de Negocio](file:///home/kedap/Documentos/repos/SAAC-Laravel/docs/architecture.md)**: Diagramas C4, Modelo de Entidad-Relación y explicación de reglas duras.
+2. **[Guía de Integración y API](file:///home/kedap/Documentos/repos/SAAC-Laravel/docs/api.md)**: Estructura de controladores, endpoints e integración de Inertia.js.
