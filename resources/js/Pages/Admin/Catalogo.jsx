@@ -75,39 +75,41 @@ export default function Catalogo() {
                         </button>
                     </div>
 
-                    <table className="w-full text-sm">
-                        <thead className="bg-cream-100">
-                            <tr>
-                                {['Clave', 'Nombre de la Actividad', 'Tipo', 'Docente Responsable', 'Créditos', 'Cupo', 'Acciones'].map((h) => (
-                                    <th key={h} className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                        {h}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-cream-300">
-                            {ACTIVIDADES.map((a) => (
-                                <tr key={a.clave} className="hover:bg-cream-50 transition-colors">
-                                    <td className="px-5 py-3.5 font-mono text-xs font-semibold text-gray-500">{a.clave}</td>
-                                    <td className="px-5 py-3.5 font-medium text-gray-800">{a.nombre}</td>
-                                    <td className="px-5 py-3.5"><TipoBadge tipo={a.tipo} /></td>
-                                    <td className="px-5 py-3.5 text-gray-600">{a.docente}</td>
-                                    <td className="px-5 py-3.5 text-center font-semibold text-gray-700">{a.creditos}</td>
-                                    <td className="px-5 py-3.5"><CupoPill inscritos={a.inscritos} cupo={a.cupo} /></td>
-                                    <td className="px-5 py-3.5">
-                                        <div className="flex gap-2">
-                                            <button className="rounded-md p-1.5 text-gray-400 hover:bg-cream-200 hover:text-guinda transition-colors" title="Editar">
-                                                ✏️
-                                            </button>
-                                            <button className="rounded-md p-1.5 text-gray-400 hover:bg-cream-200 hover:text-gray-600 transition-colors" title="Ver">
-                                                👁
-                                            </button>
-                                        </div>
-                                    </td>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                            <thead className="bg-cream-100">
+                                <tr>
+                                    {['Clave', 'Nombre de la Actividad', 'Tipo', 'Docente Responsable', 'Créditos', 'Cupo', 'Acciones'].map((h) => (
+                                        <th key={h} className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                            {h}
+                                        </th>
+                                    ))}
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="divide-y divide-cream-300">
+                                {ACTIVIDADES.map((a) => (
+                                    <tr key={a.clave} className="hover:bg-cream-50 transition-colors">
+                                        <td className="px-5 py-3.5 font-mono text-xs font-semibold text-gray-500">{a.clave}</td>
+                                        <td className="px-5 py-3.5 font-medium text-gray-800 whitespace-nowrap">{a.nombre}</td>
+                                        <td className="px-5 py-3.5"><TipoBadge tipo={a.tipo} /></td>
+                                        <td className="px-5 py-3.5 text-gray-600 whitespace-nowrap">{a.docente}</td>
+                                        <td className="px-5 py-3.5 text-center font-semibold text-gray-700">{a.creditos}</td>
+                                        <td className="px-5 py-3.5 whitespace-nowrap"><CupoPill inscritos={a.inscritos} cupo={a.cupo} /></td>
+                                        <td className="px-5 py-3.5">
+                                            <div className="flex gap-2">
+                                                <button className="rounded-md p-1.5 text-gray-400 hover:bg-cream-200 hover:text-guinda transition-colors" title="Editar">
+                                                    ✏️
+                                                </button>
+                                                <button className="rounded-md p-1.5 text-gray-400 hover:bg-cream-200 hover:text-gray-600 transition-colors" title="Ver">
+                                                    👁
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
 
                     {/* Footer paginación */}
                     <div className="flex items-center justify-between border-t border-cream-400 px-5 py-3">

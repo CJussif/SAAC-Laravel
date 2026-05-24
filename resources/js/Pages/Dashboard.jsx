@@ -39,34 +39,36 @@ function DashboardAlumno({ user }) {
                 <div className="border-b border-cream-400 px-5 py-3">
                     <h2 className="text-sm font-semibold text-gray-700">Actividades Inscritas</h2>
                 </div>
-                <table className="w-full text-sm">
-                    <thead className="bg-cream-100">
-                        <tr>
-                            <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Actividad</th>
-                            <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Horario</th>
-                            <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Tipo</th>
-                            <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-cream-300">
-                        {actividades.length === 0 ? (
+                <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                        <thead className="bg-cream-100">
                             <tr>
-                                <td colSpan="4" className="px-5 py-4 text-center text-xs text-gray-500 bg-cream-50">
-                                    No estás inscrito en ninguna actividad este semestre.
-                                </td>
+                                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Actividad</th>
+                                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Horario</th>
+                                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Tipo</th>
+                                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Estado</th>
                             </tr>
-                        ) : (
-                            actividades.map((act) => (
-                                <tr key={act.id} className="hover:bg-cream-100 transition-colors">
-                                    <td className="px-5 py-3.5 font-medium text-gray-800 whitespace-nowrap">{act.nombre}</td>
-                                    <td className="px-5 py-3.5 text-gray-500 whitespace-nowrap">{act.horario || 'Sin horario registrado'}</td>
-                                    <td className="px-5 py-3.5"><TipoBadge tipo={getActivityType(act.nombre)} /></td>
-                                    <td className="px-5 py-3.5"><TipoBadge estatus={act.pivot?.estatus || 'en curso'} /></td>
+                        </thead>
+                        <tbody className="divide-y divide-cream-300">
+                            {actividades.length === 0 ? (
+                                <tr>
+                                    <td colSpan="4" className="px-5 py-4 text-center text-xs text-gray-500 bg-cream-50">
+                                        No estás inscrito en ninguna actividad este semestre.
+                                    </td>
                                 </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
+                            ) : (
+                                actividades.map((act) => (
+                                    <tr key={act.id} className="hover:bg-cream-100 transition-colors">
+                                        <td className="px-5 py-3.5 font-medium text-gray-800 whitespace-nowrap">{act.nombre}</td>
+                                        <td className="px-5 py-3.5 text-gray-500 whitespace-nowrap">{act.horario || 'Sin horario registrado'}</td>
+                                        <td className="px-5 py-3.5"><TipoBadge tipo={getActivityType(act.nombre)} /></td>
+                                        <td className="px-5 py-3.5"><TipoBadge estatus={act.pivot?.estatus || 'en curso'} /></td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

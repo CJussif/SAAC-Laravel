@@ -169,48 +169,50 @@ export default function Grupos() {
                                     <p className="mt-1 text-xs text-gray-400">Este grupo no tiene inscripciones activas.</p>
                                 </div>
                             ) : (
-                                <table className="w-full text-sm">
-                                    <thead className="bg-cream-100">
-                                        <tr>
-                                            {['Matrícula', 'Alumno', 'Carrera', 'Asistencia', 'Estatus', 'Acciones'].map((h) => (
-                                                <th key={h} className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                                    {h}
-                                                </th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-cream-300">
-                                        {alumnos.map((a) => (
-                                            <tr key={a.matricula} className="hover:bg-cream-50 transition-colors">
-                                                <td className="px-5 py-3.5 font-mono text-xs font-semibold text-gray-500">{a.matricula}</td>
-                                                <td className="px-5 py-3.5">
-                                                    <div className="flex items-center gap-2.5">
-                                                        <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-guinda text-[10px] font-bold text-white">
-                                                            {a.nombre.split(' ').map((n) => n[0]).slice(0, 2).join('')}
-                                                        </div>
-                                                        <span className="font-medium text-gray-800">{a.nombre}</span>
-                                                    </div>
-                                                </td>
-                                                <td className="px-5 py-3.5">
-                                                    <span className="rounded bg-cream-200 px-2 py-0.5 text-xs font-semibold text-gray-600">{a.carrera}</span>
-                                                </td>
-                                                <td className="px-5 py-3.5">
-                                                    <AsistenciaBar pct={a.asistencia} />
-                                                </td>
-                                                <td className="px-5 py-3.5">
-                                                    <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${ESTATUS_COLOR[a.estatus]}`}>
-                                                        {ESTATUS_LABEL[a.estatus]}
-                                                    </span>
-                                                </td>
-                                                <td className="px-5 py-3.5">
-                                                    <button className="rounded-md px-2.5 py-1.5 text-xs font-medium text-gray-500 hover:bg-cream-200 hover:text-guinda transition-colors">
-                                                        Ver expediente
-                                                    </button>
-                                                </td>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-sm">
+                                        <thead className="bg-cream-100">
+                                            <tr>
+                                                {['Matrícula', 'Alumno', 'Carrera', 'Asistencia', 'Estatus', 'Acciones'].map((h) => (
+                                                    <th key={h} className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                                        {h}
+                                                    </th>
+                                                ))}
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody className="divide-y divide-cream-300">
+                                            {alumnos.map((a) => (
+                                                <tr key={a.matricula} className="hover:bg-cream-50 transition-colors">
+                                                    <td className="px-5 py-3.5 font-mono text-xs font-semibold text-gray-500">{a.matricula}</td>
+                                                    <td className="px-5 py-3.5 whitespace-nowrap">
+                                                        <div className="flex items-center gap-2.5">
+                                                            <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-guinda text-[10px] font-bold text-white">
+                                                                {a.nombre.split(' ').map((n) => n[0]).slice(0, 2).join('')}
+                                                            </div>
+                                                            <span className="font-medium text-gray-800">{a.nombre}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-5 py-3.5 whitespace-nowrap">
+                                                        <span className="rounded bg-cream-200 px-2 py-0.5 text-xs font-semibold text-gray-600">{a.carrera}</span>
+                                                    </td>
+                                                    <td className="px-5 py-3.5 whitespace-nowrap">
+                                                        <AsistenciaBar pct={a.asistencia} />
+                                                    </td>
+                                                    <td className="px-5 py-3.5">
+                                                        <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${ESTATUS_COLOR[a.estatus]}`}>
+                                                            {ESTATUS_LABEL[a.estatus]}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-5 py-3.5">
+                                                        <button className="rounded-md px-2.5 py-1.5 text-xs font-medium text-gray-500 hover:bg-cream-200 hover:text-guinda transition-colors whitespace-nowrap">
+                                                            Ver expediente
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             )}
                         </div>
                     </div>
