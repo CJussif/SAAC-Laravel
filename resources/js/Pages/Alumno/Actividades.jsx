@@ -20,14 +20,21 @@ function CupoBar({ inscritos, cupo }) {
     );
 }
 
+const CATEGORY_GRADIENTS = {
+    deportiva: 'from-blue-500 to-blue-700',
+    cultural: 'from-amber-500 to-amber-700',
+    academica: 'from-teal-500 to-teal-700',
+};
+
 function ActividadCard({ act, onInscribirse }) {
     const agotado = act.estatus === 'agotado';
     const inscrito = act.ya_inscrito;
+    const gradient = CATEGORY_GRADIENTS[act.tipo] || 'from-blue-500 to-blue-700';
 
     return (
         <div className="card flex flex-col overflow-hidden">
             {/* Header con gradiente */}
-            <div className={`relative h-28 bg-gradient-to-br ${act.color || 'from-blue-500 to-blue-700'} flex items-end p-3`}>
+            <div className={`relative h-28 bg-gradient-to-br ${gradient} flex items-end p-3`}>
                 <TipoBadge tipo={act.tipo} />
                 {inscrito ? (
                     <span className="absolute right-3 top-3 rounded-full bg-green-600 px-2 py-0.5 text-[10px] font-bold text-white uppercase tracking-wide">
