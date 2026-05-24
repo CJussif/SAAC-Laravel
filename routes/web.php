@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AlumnoActividadesController;
+use App\Http\Controllers\InscripcionController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,7 +26,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Alumno
-    Route::get('/actividades',       fn () => Inertia::render('Alumno/Actividades'))->name('actividades.index');
+    Route::get('/actividades', [AlumnoActividadesController::class, 'index'])->name('actividades.index');
+    Route::post('/inscripciones', [InscripcionController::class, 'store'])->name('inscripciones.store');
     Route::get('/constancias',       fn () => Inertia::render('Alumno/Constancias'))->name('constancias.index');
     Route::get('/historial',         fn () => Inertia::render('Alumno/Historial'))->name('historial.index');
     Route::get('/subir-evidencia',   fn () => Inertia::render('Alumno/CargaEvidencias'))->name('evidencias.create');
