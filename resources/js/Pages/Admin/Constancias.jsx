@@ -70,59 +70,61 @@ export default function Constancias() {
                         </button>
                     </div>
 
-                    <table className="w-full text-sm">
-                        <thead className="bg-cream-100">
-                            <tr>
-                                {['Folio', 'Alumno', 'Carrera', 'Actividad', 'Tipo', 'Créditos', 'Fecha de Emisión', 'Estatus', 'Acciones'].map((h) => (
-                                    <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                        {h}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-cream-300">
-                            {CONSTANCIAS.map((c) => (
-                                <tr key={c.folio} className="hover:bg-cream-50 transition-colors">
-                                    <td className="px-4 py-3.5 font-mono text-xs font-bold text-guinda">{c.folio}</td>
-                                    <td className="px-4 py-3.5">
-                                        <div className="flex items-center gap-2">
-                                            <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-guinda text-[10px] font-bold text-white">
-                                                {c.alumno.split(' ').map((n) => n[0]).slice(0, 2).join('')}
-                                            </div>
-                                            <div>
-                                                <p className="font-medium text-gray-800">{c.alumno}</p>
-                                                <p className="text-[10px] font-mono text-gray-400">{c.matricula}</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-4 py-3.5">
-                                        <span className="rounded bg-cream-200 px-2 py-0.5 text-xs font-semibold text-gray-600">{c.carrera}</span>
-                                    </td>
-                                    <td className="px-4 py-3.5 text-xs font-medium text-gray-700 max-w-[180px] truncate">{c.actividad}</td>
-                                    <td className="px-4 py-3.5"><TipoBadge tipo={c.tipo} /></td>
-                                    <td className="px-4 py-3.5 text-center font-bold text-gray-700">{c.creditos}</td>
-                                    <td className="px-4 py-3.5 text-xs text-gray-500 whitespace-nowrap">{c.fecha}</td>
-                                    <td className="px-4 py-3.5">
-                                        <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${ESTATUS_STYLE[c.estatus]}`}>
-                                            {c.estatus === 'emitida' ? 'Emitida' : 'Pendiente'}
-                                        </span>
-                                    </td>
-                                    <td className="px-4 py-3.5">
-                                        <div className="flex gap-1">
-                                            <button className="rounded-md px-2.5 py-1.5 text-xs font-medium text-gray-500 hover:bg-cream-200 hover:text-guinda transition-colors">
-                                                Ver PDF
-                                            </button>
-                                            {c.estatus === 'pendiente' && (
-                                                <button className="rounded-md px-2.5 py-1.5 text-xs font-medium text-green-600 hover:bg-green-50 transition-colors">
-                                                    Emitir
-                                                </button>
-                                            )}
-                                        </div>
-                                    </td>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                            <thead className="bg-cream-100">
+                                <tr>
+                                    {['Folio', 'Alumno', 'Carrera', 'Actividad', 'Tipo', 'Créditos', 'Fecha de Emisión', 'Estatus', 'Acciones'].map((h) => (
+                                        <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                            {h}
+                                        </th>
+                                    ))}
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="divide-y divide-cream-300">
+                                {CONSTANCIAS.map((c) => (
+                                    <tr key={c.folio} className="hover:bg-cream-50 transition-colors">
+                                        <td className="px-4 py-3.5 font-mono text-xs font-bold text-guinda">{c.folio}</td>
+                                        <td className="px-4 py-3.5 whitespace-nowrap">
+                                            <div className="flex items-center gap-2">
+                                                <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-guinda text-[10px] font-bold text-white">
+                                                    {c.alumno.split(' ').map((n) => n[0]).slice(0, 2).join('')}
+                                                </div>
+                                                <div>
+                                                    <p className="font-medium text-gray-800">{c.alumno}</p>
+                                                    <p className="text-[10px] font-mono text-gray-400">{c.matricula}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-4 py-3.5 whitespace-nowrap">
+                                            <span className="rounded bg-cream-200 px-2 py-0.5 text-xs font-semibold text-gray-600">{c.carrera}</span>
+                                        </td>
+                                        <td className="px-4 py-3.5 text-xs font-medium text-gray-700 max-w-[180px] truncate">{c.actividad}</td>
+                                        <td className="px-4 py-3.5"><TipoBadge tipo={c.tipo} /></td>
+                                        <td className="px-4 py-3.5 text-center font-bold text-gray-700">{c.creditos}</td>
+                                        <td className="px-4 py-3.5 text-xs text-gray-500 whitespace-nowrap">{c.fecha}</td>
+                                        <td className="px-4 py-3.5">
+                                            <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${ESTATUS_STYLE[c.estatus]}`}>
+                                                {c.estatus === 'emitida' ? 'Emitida' : 'Pendiente'}
+                                            </span>
+                                        </td>
+                                        <td className="px-4 py-3.5">
+                                            <div className="flex gap-1">
+                                                <button className="rounded-md px-2.5 py-1.5 text-xs font-medium text-gray-500 hover:bg-cream-200 hover:text-guinda transition-colors">
+                                                    Ver PDF
+                                                </button>
+                                                {c.estatus === 'pendiente' && (
+                                                    <button className="rounded-md px-2.5 py-1.5 text-xs font-medium text-green-600 hover:bg-green-50 transition-colors">
+                                                        Emitir
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
 
                     <div className="flex items-center justify-between border-t border-cream-400 px-5 py-3">
                         <p className="text-xs text-gray-400">Mostrando {CONSTANCIAS.length} constancias</p>

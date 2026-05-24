@@ -69,50 +69,52 @@ export default function Evidencias() {
                         </div>
                     </div>
 
-                    <table className="w-full text-sm">
-                        <thead className="bg-cream-100">
-                            <tr>
-                                {['Alumno / No. Control', 'Actividad Externa', 'Fecha Subida', 'Estado', 'Acciones'].map((h) => (
-                                    <th key={h} className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">{h}</th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-cream-300">
-                            {SOLICITUDES.map((s, idx) => (
-                                <tr key={s.id} className="hover:bg-cream-50 transition-colors">
-                                    <td className="px-5 py-4">
-                                        <div className="flex items-center gap-3">
-                                            <div className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full ${AVATAR_COLORS[idx % AVATAR_COLORS.length]} text-xs font-bold text-white`}>
-                                                {s.initials}
-                                            </div>
-                                            <div>
-                                                <p className="font-semibold text-gray-800">{s.nombre}</p>
-                                                <p className="font-mono text-xs text-gray-400">{s.matricula}</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-5 py-4">
-                                        <p className="font-medium text-gray-800">{s.actividad}</p>
-                                        <p className="text-xs text-gray-400">{s.institucion}</p>
-                                    </td>
-                                    <td className="px-5 py-4 text-sm text-gray-500">{s.fecha}</td>
-                                    <td className="px-5 py-4">
-                                        <span className="badge-pendiente">Pendiente</span>
-                                    </td>
-                                    <td className="px-5 py-4">
-                                        <div className="flex gap-2">
-                                            <button className="rounded-lg border border-cream-400 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-cream-100 transition-colors">
-                                                Ver Evidencia
-                                            </button>
-                                            <button className="rounded-lg bg-guinda px-3 py-1.5 text-xs font-semibold text-white hover:bg-guinda-700 transition-colors">
-                                                Validar
-                                            </button>
-                                        </div>
-                                    </td>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                            <thead className="bg-cream-100">
+                                <tr>
+                                    {['Alumno / No. Control', 'Actividad Externa', 'Fecha Subida', 'Estado', 'Acciones'].map((h) => (
+                                        <th key={h} className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">{h}</th>
+                                    ))}
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="divide-y divide-cream-300">
+                                {SOLICITUDES.map((s, idx) => (
+                                    <tr key={s.id} className="hover:bg-cream-50 transition-colors">
+                                        <td className="px-5 py-4 whitespace-nowrap">
+                                            <div className="flex items-center gap-3">
+                                                <div className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full ${AVATAR_COLORS[idx % AVATAR_COLORS.length]} text-xs font-bold text-white`}>
+                                                    {s.initials}
+                                                </div>
+                                                <div>
+                                                    <p className="font-semibold text-gray-800">{s.nombre}</p>
+                                                    <p className="font-mono text-xs text-gray-400">{s.matricula}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-5 py-4 whitespace-nowrap">
+                                            <p className="font-medium text-gray-800">{s.actividad}</p>
+                                            <p className="text-xs text-gray-400">{s.institucion}</p>
+                                        </td>
+                                        <td className="px-5 py-4 text-sm text-gray-500 whitespace-nowrap">{s.fecha}</td>
+                                        <td className="px-5 py-4">
+                                            <span className="badge-pendiente">Pendiente</span>
+                                        </td>
+                                        <td className="px-5 py-4">
+                                            <div className="flex gap-2">
+                                                <button className="rounded-lg border border-cream-400 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-cream-100 transition-colors whitespace-nowrap">
+                                                    Ver Evidencia
+                                                </button>
+                                                <button className="rounded-lg bg-guinda px-3 py-1.5 text-xs font-semibold text-white hover:bg-guinda-700 transition-colors whitespace-nowrap">
+                                                    Validar
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
 
                     <div className="flex items-center justify-between border-t border-cream-400 px-5 py-3">
                         <p className="text-xs text-gray-400">Mostrando 1 a 4 de 34 registros</p>

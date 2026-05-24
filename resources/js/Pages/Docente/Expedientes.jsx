@@ -112,53 +112,55 @@ export default function Expedientes() {
                         </select>
                     </div>
 
-                    <table className="w-full text-sm">
-                        <thead className="bg-cream-100">
-                            <tr>
-                                {['Matrícula', 'Alumno', 'Actividad', 'Sesiones', 'Asistencia', 'Estatus', 'Crédito'].map((h) => (
-                                    <th key={h} className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                        {h}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-cream-300">
-                            {EXPEDIENTES.map((exp) => (
-                                <tr key={exp.matricula + exp.actividad} className="hover:bg-cream-50 transition-colors">
-                                    <td className="px-5 py-3.5 font-mono text-xs font-semibold text-gray-500">{exp.matricula}</td>
-                                    <td className="px-5 py-3.5">
-                                        <div className="flex items-center gap-2.5">
-                                            <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-guinda text-[10px] font-bold text-white">
-                                                {exp.nombre.split(' ').map((n) => n[0]).slice(0, 2).join('')}
-                                            </div>
-                                            <div>
-                                                <p className="font-medium text-gray-800">{exp.nombre}</p>
-                                                <p className="text-[10px] text-gray-400">{exp.carrera} · {exp.semestre}° semestre</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-5 py-3.5">
-                                        <p className="text-xs font-medium text-gray-700">{exp.actividad}</p>
-                                        <TipoBadge tipo={exp.tipo} />
-                                    </td>
-                                    <td className="px-5 py-3.5 text-center">
-                                        <span className="tabular-nums text-xs font-medium text-gray-600">
-                                            {exp.sesiones.cursadas}/{exp.sesiones.total}
-                                        </span>
-                                    </td>
-                                    <td className="px-5 py-3.5"><AsistenciaBar pct={exp.asistencia} /></td>
-                                    <td className="px-5 py-3.5">
-                                        <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${ESTATUS_STYLE[exp.estatus]}`}>
-                                            {ESTATUS_LABEL[exp.estatus]}
-                                        </span>
-                                    </td>
-                                    <td className="px-5 py-3.5 text-center">
-                                        <span className="font-bold text-gray-700">{exp.creditos}</span>
-                                    </td>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                            <thead className="bg-cream-100">
+                                <tr>
+                                    {['Matrícula', 'Alumno', 'Actividad', 'Sesiones', 'Asistencia', 'Estatus', 'Crédito'].map((h) => (
+                                        <th key={h} className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                            {h}
+                                        </th>
+                                    ))}
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="divide-y divide-cream-300">
+                                {EXPEDIENTES.map((exp) => (
+                                    <tr key={exp.matricula + exp.actividad} className="hover:bg-cream-50 transition-colors">
+                                        <td className="px-5 py-3.5 font-mono text-xs font-semibold text-gray-500">{exp.matricula}</td>
+                                        <td className="px-5 py-3.5 whitespace-nowrap">
+                                            <div className="flex items-center gap-2.5">
+                                                <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-guinda text-[10px] font-bold text-white">
+                                                    {exp.nombre.split(' ').map((n) => n[0]).slice(0, 2).join('')}
+                                                </div>
+                                                <div>
+                                                    <p className="font-medium text-gray-800">{exp.nombre}</p>
+                                                    <p className="text-[10px] text-gray-400">{exp.carrera} · {exp.semestre}° semestre</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-5 py-3.5 whitespace-nowrap">
+                                            <p className="text-xs font-medium text-gray-700">{exp.actividad}</p>
+                                            <TipoBadge tipo={exp.tipo} />
+                                        </td>
+                                        <td className="px-5 py-3.5 text-center">
+                                            <span className="tabular-nums text-xs font-medium text-gray-600">
+                                                {exp.sesiones.cursadas}/{exp.sesiones.total}
+                                            </span>
+                                        </td>
+                                        <td className="px-5 py-3.5"><AsistenciaBar pct={exp.asistencia} /></td>
+                                        <td className="px-5 py-3.5">
+                                            <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${ESTATUS_STYLE[exp.estatus]}`}>
+                                                {ESTATUS_LABEL[exp.estatus]}
+                                            </span>
+                                        </td>
+                                        <td className="px-5 py-3.5 text-center">
+                                            <span className="font-bold text-gray-700">{exp.creditos}</span>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
 
                     <div className="flex items-center justify-between border-t border-cream-400 px-5 py-3">
                         <p className="text-xs text-gray-400">Mostrando {EXPEDIENTES.length} registros</p>

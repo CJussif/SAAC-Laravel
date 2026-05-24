@@ -88,66 +88,68 @@ export default function Alumnos() {
                         </select>
                     </div>
 
-                    <table className="w-full text-sm">
-                        <thead className="bg-cream-100">
-                            <tr>
-                                {['Matrícula', 'Alumno', 'Carrera', 'Semestre', 'Créditos', 'Estatus', 'Acciones'].map((h) => (
-                                    <th key={h} className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                        {h}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-cream-300">
-                            {ALUMNOS.map((alumno) => (
-                                <tr key={alumno.id} className="hover:bg-cream-50 transition-colors">
-                                    <td className="px-5 py-3.5 font-mono text-xs font-semibold text-gray-500">
-                                        {alumno.matricula}
-                                    </td>
-                                    <td className="px-5 py-3.5">
-                                        <div className="flex items-center gap-3">
-                                            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-guinda text-xs font-bold text-white">
-                                                {alumno.nombre.split(' ').map((n) => n[0]).slice(0, 2).join('')}
-                                            </div>
-                                            <span className="font-medium text-gray-800">{alumno.nombre}</span>
-                                        </div>
-                                    </td>
-                                    <td className="px-5 py-3.5">
-                                        <span className="rounded bg-cream-200 px-2 py-0.5 text-xs font-semibold text-gray-600">
-                                            {alumno.carrera}
-                                        </span>
-                                    </td>
-                                    <td className="px-5 py-3.5 text-center text-sm text-gray-600">
-                                        {alumno.semestre}°
-                                    </td>
-                                    <td className="px-5 py-3.5">
-                                        <CreditosMini creditos={alumno.creditos} meta={alumno.meta} />
-                                    </td>
-                                    <td className="px-5 py-3.5">
-                                        <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${ESTATUS_STYLE[alumno.estatus]}`}>
-                                            {alumno.estatus}
-                                        </span>
-                                    </td>
-                                    <td className="px-5 py-3.5">
-                                        <div className="flex gap-1">
-                                            <button
-                                                title="Ver expediente"
-                                                className="rounded-md px-2.5 py-1.5 text-xs font-medium text-gray-500 hover:bg-cream-200 hover:text-guinda transition-colors"
-                                            >
-                                                Ver
-                                            </button>
-                                            <button
-                                                title="Editar"
-                                                className="rounded-md px-2.5 py-1.5 text-xs font-medium text-gray-500 hover:bg-cream-200 hover:text-gray-700 transition-colors"
-                                            >
-                                                Editar
-                                            </button>
-                                        </div>
-                                    </td>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                            <thead className="bg-cream-100">
+                                <tr>
+                                    {['Matrícula', 'Alumno', 'Carrera', 'Semestre', 'Créditos', 'Estatus', 'Acciones'].map((h) => (
+                                        <th key={h} className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                            {h}
+                                        </th>
+                                    ))}
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="divide-y divide-cream-300">
+                                {ALUMNOS.map((alumno) => (
+                                    <tr key={alumno.id} className="hover:bg-cream-50 transition-colors">
+                                        <td className="px-5 py-3.5 font-mono text-xs font-semibold text-gray-500">
+                                            {alumno.matricula}
+                                        </td>
+                                        <td className="px-5 py-3.5">
+                                            <div className="flex items-center gap-3">
+                                                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-guinda text-xs font-bold text-white">
+                                                    {alumno.nombre.split(' ').map((n) => n[0]).slice(0, 2).join('')}
+                                                </div>
+                                                <span className="font-medium text-gray-800">{alumno.nombre}</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-5 py-3.5 whitespace-nowrap">
+                                            <span className="rounded bg-cream-200 px-2 py-0.5 text-xs font-semibold text-gray-600">
+                                                {alumno.carrera}
+                                            </span>
+                                        </td>
+                                        <td className="px-5 py-3.5 text-center text-sm text-gray-600">
+                                            {alumno.semestre}°
+                                        </td>
+                                        <td className="px-5 py-3.5 whitespace-nowrap">
+                                            <CreditosMini creditos={alumno.creditos} meta={alumno.meta} />
+                                        </td>
+                                        <td className="px-5 py-3.5">
+                                            <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${ESTATUS_STYLE[alumno.estatus]}`}>
+                                                {alumno.estatus}
+                                            </span>
+                                        </td>
+                                        <td className="px-5 py-3.5">
+                                            <div className="flex gap-1">
+                                                <button
+                                                    title="Ver expediente"
+                                                    className="rounded-md px-2.5 py-1.5 text-xs font-medium text-gray-500 hover:bg-cream-200 hover:text-guinda transition-colors"
+                                                >
+                                                    Ver
+                                                </button>
+                                                <button
+                                                    title="Editar"
+                                                    className="rounded-md px-2.5 py-1.5 text-xs font-medium text-gray-500 hover:bg-cream-200 hover:text-gray-700 transition-colors"
+                                                >
+                                                    Editar
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
 
                     {/* Footer */}
                     <div className="flex items-center justify-between border-t border-cream-400 px-5 py-3">

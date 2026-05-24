@@ -164,47 +164,49 @@ export default function Historial() {
                         <h2 className="text-sm font-bold text-gray-700">Registro de Actividades</h2>
                     </div>
 
-                    <table className="w-full text-sm">
-                        <thead className="bg-cream-100">
-                            <tr>
-                                {['Clave', 'Actividad', 'Tipo', 'Semestre', 'Asistencia', 'Créditos', 'Estatus', 'Folio'].map((h) => (
-                                    <th key={h} className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                        {h}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-cream-300">
-                            {HISTORIAL.map((item) => (
-                                <tr key={item.id} className="hover:bg-cream-50 transition-colors">
-                                    <td className="px-5 py-3.5 font-mono text-xs font-semibold text-gray-500">{item.clave}</td>
-                                    <td className="px-5 py-3.5">
-                                        <p className="font-medium text-gray-800">{item.nombre}</p>
-                                        <p className="text-xs text-gray-400">{item.instructor}</p>
-                                    </td>
-                                    <td className="px-5 py-3.5"><TipoBadge tipo={item.tipo} /></td>
-                                    <td className="px-5 py-3.5 text-xs text-gray-500">{item.semestre}</td>
-                                    <td className="px-5 py-3.5">
-                                        {item.estatus === 'en-curso'
-                                            ? <span className="text-xs text-gray-400 italic">En progreso</span>
-                                            : <AsistenciaBar pct={item.asistencia} />
-                                        }
-                                    </td>
-                                    <td className="px-5 py-3.5 text-center">
-                                        <span className="font-bold text-gray-700">{item.creditos}</span>
-                                    </td>
-                                    <td className="px-5 py-3.5"><TipoBadge estatus={item.estatus} /></td>
-                                    <td className="px-5 py-3.5">
-                                        {item.folio ? (
-                                            <span className="font-mono text-xs text-guinda font-medium">{item.folio}</span>
-                                        ) : (
-                                            <span className="text-xs text-gray-300 italic">—</span>
-                                        )}
-                                    </td>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                            <thead className="bg-cream-100">
+                                <tr>
+                                    {['Clave', 'Actividad', 'Tipo', 'Semestre', 'Asistencia', 'Créditos', 'Estatus', 'Folio'].map((h) => (
+                                        <th key={h} className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                            {h}
+                                        </th>
+                                    ))}
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="divide-y divide-cream-300">
+                                {HISTORIAL.map((item) => (
+                                    <tr key={item.id} className="hover:bg-cream-50 transition-colors">
+                                        <td className="px-5 py-3.5 font-mono text-xs font-semibold text-gray-500">{item.clave}</td>
+                                        <td className="px-5 py-3.5 whitespace-nowrap">
+                                            <p className="font-medium text-gray-800">{item.nombre}</p>
+                                            <p className="text-xs text-gray-400">{item.instructor}</p>
+                                        </td>
+                                        <td className="px-5 py-3.5"><TipoBadge tipo={item.tipo} /></td>
+                                        <td className="px-5 py-3.5 text-xs text-gray-500 whitespace-nowrap">{item.semestre}</td>
+                                        <td className="px-5 py-3.5 whitespace-nowrap">
+                                            {item.estatus === 'en-curso'
+                                                ? <span className="text-xs text-gray-400 italic">En progreso</span>
+                                                : <AsistenciaBar pct={item.asistencia} />
+                                            }
+                                        </td>
+                                        <td className="px-5 py-3.5 text-center">
+                                            <span className="font-bold text-gray-700">{item.creditos}</span>
+                                        </td>
+                                        <td className="px-5 py-3.5"><TipoBadge estatus={item.estatus} /></td>
+                                        <td className="px-5 py-3.5">
+                                            {item.folio ? (
+                                                <span className="font-mono text-xs text-guinda font-medium">{item.folio}</span>
+                                            ) : (
+                                                <span className="text-xs text-gray-300 italic">—</span>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </AuthenticatedLayout>

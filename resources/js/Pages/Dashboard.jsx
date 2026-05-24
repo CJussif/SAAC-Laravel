@@ -26,30 +26,32 @@ function DashboardAlumno({ user }) {
                 <div className="border-b border-cream-400 px-5 py-3">
                     <h2 className="text-sm font-semibold text-gray-700">Actividades Inscritas</h2>
                 </div>
-                <table className="w-full text-sm">
-                    <thead className="bg-cream-100">
-                        <tr>
-                            <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Actividad</th>
-                            <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Horario</th>
-                            <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Tipo</th>
-                            <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-cream-300">
-                        <tr className="hover:bg-cream-100 transition-colors">
-                            <td className="px-5 py-3.5 font-medium text-gray-800">Taller de Ajedrez Básico</td>
-                            <td className="px-5 py-3.5 text-gray-500">Lun, Mié · 14:00 – 16:00</td>
-                            <td className="px-5 py-3.5"><TipoBadge tipo="deportiva" /></td>
-                            <td className="px-5 py-3.5"><TipoBadge estatus="en curso" /></td>
-                        </tr>
-                        <tr className="hover:bg-cream-100 transition-colors">
-                            <td className="px-5 py-3.5 font-medium text-gray-800">Seminario de Liderazgo</td>
-                            <td className="px-5 py-3.5 text-gray-500">Vie · 10:00 – 13:00</td>
-                            <td className="px-5 py-3.5"><TipoBadge tipo="académica" /></td>
-                            <td className="px-5 py-3.5"><TipoBadge estatus="en curso" /></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                        <thead className="bg-cream-100">
+                            <tr>
+                                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Actividad</th>
+                                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Horario</th>
+                                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Tipo</th>
+                                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-cream-300">
+                            <tr className="hover:bg-cream-100 transition-colors">
+                                <td className="px-5 py-3.5 font-medium text-gray-800 whitespace-nowrap">Taller de Ajedrez Básico</td>
+                                <td className="px-5 py-3.5 text-gray-500 whitespace-nowrap">Lun, Mié · 14:00 – 16:00</td>
+                                <td className="px-5 py-3.5"><TipoBadge tipo="deportiva" /></td>
+                                <td className="px-5 py-3.5"><TipoBadge estatus="en curso" /></td>
+                            </tr>
+                            <tr className="hover:bg-cream-100 transition-colors">
+                                <td className="px-5 py-3.5 font-medium text-gray-800 whitespace-nowrap">Seminario de Liderazgo</td>
+                                <td className="px-5 py-3.5 text-gray-500 whitespace-nowrap">Vie · 10:00 – 13:00</td>
+                                <td className="px-5 py-3.5"><TipoBadge tipo="académica" /></td>
+                                <td className="px-5 py-3.5"><TipoBadge estatus="en curso" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );
