@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AlumnoActividadesController;
 use App\Http\Controllers\InscripcionController;
+use App\Http\Controllers\AsistenciaController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -33,7 +34,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/subir-evidencia',   fn () => Inertia::render('Alumno/CargaEvidencias'))->name('evidencias.create');
 
     // Docente
-    Route::get('/asistencia',   fn () => Inertia::render('Docente/Asistencia'))->name('asistencia.index');
+    Route::get('/asistencia', [AsistenciaController::class, 'index'])->name('asistencia.index');
+    Route::post('/asistencia', [AsistenciaController::class, 'store'])->name('asistencia.store');
+    Route::post('/asistencia/acreditar', [AsistenciaController::class, 'acreditar'])->name('asistencia.acreditar');
     Route::get('/grupos',       fn () => Inertia::render('Docente/Grupos'))->name('grupos.index');
     Route::get('/expedientes',  fn () => Inertia::render('Docente/Expedientes'))->name('expedientes.index');
 
