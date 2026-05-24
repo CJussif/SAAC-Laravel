@@ -18,15 +18,10 @@ class Asistencia extends Model
         'asistio',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
-            'fecha' => 'date',
+            'fecha' => 'date:Y-m-d',
             'asistio' => 'boolean',
         ];
     }
