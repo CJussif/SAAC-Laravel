@@ -28,4 +28,9 @@ class Inscripcion extends Model
     {
         return $this->belongsTo(Actividad::class, 'actividad_id');
     }
+
+    public function asistencias()
+    {
+        return $this->hasMany(Asistencia::class, 'inscripcion_id');
+    }
 }
