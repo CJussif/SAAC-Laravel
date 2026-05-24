@@ -277,7 +277,14 @@ export default function CargaEvidencias() {
                                 </div>
                                 <div className="flex items-center justify-between border-t border-amber-200/50 pt-2 text-[10px] text-gray-500">
                                     <span>📅 24 de Mayo, 2026</span>
-                                    <span className="font-semibold text-guinda">Ver PDF</span>
+                                    <a
+                                        href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="font-semibold text-guinda hover:underline"
+                                    >
+                                        Ver PDF
+                                    </a>
                                 </div>
                             </div>
                         </div>
