@@ -29,7 +29,8 @@ export default function Asistencia({
     selectedGrupoId,
     semana = 1,
     weekRange = "",
-    weekDates = []
+    weekDates = [],
+    diasClase = [0, 1, 2, 3, 4]
 }) {
     const { flash = {}, errors = {} } = usePage().props;
 
@@ -80,11 +81,11 @@ export default function Asistencia({
         const payload = [];
         Object.entries(attendanceMatrix).forEach(([inscripcionId, days]) => {
             days.forEach((asistio, index) => {
-                if (asistio !== null) {
+                if (diasClase.includes(index)) {
                     payload.push({
                         inscripcion_id: parseInt(inscripcionId, 10),
                         fecha: weekDates[index],
-                        asistio: asistio
+                        asistio: asistio === true
                     });
                 }
             });
@@ -256,15 +257,20 @@ export default function Asistencia({
                                             <td className="px-4 py-3.5 font-mono text-xs text-gray-500">{a.matricula}</td>
                                             <td className="px-4 py-3.5 font-medium text-gray-800">{a.nombre}</td>
                                             {DIAS.map((d, di) => {
+                                                const tieneClase = diasClase.includes(di);
                                                 const isChecked = attendanceMatrix[a.inscripcion_id]?.[di] === true;
-                                                const isDisabled = a.estatus === 'acreditado' || a.estatus === 'reprobado';
+                                                const isDisabled = a.estatus === 'acreditado' || a.estatus === 'reprobado' || !tieneClase;
                                                 return (
                                                     <td key={di} className="px-3 py-3.5 text-center">
-                                                        <CheckBox 
-                                                            checked={isChecked}
-                                                            disabled={isDisabled}
-                                                            onClick={() => handleToggle(a.inscripcion_id, di)}
-                                                        />
+                                                        {tieneClase ? (
+                                                            <CheckBox 
+                                                                checked={isChecked}
+                                                                disabled={isDisabled}
+                                                                onClick={() => handleToggle(a.inscripcion_id, di)}
+                                                            />
+                                                        ) : (
+                                                            <span className="text-xs text-gray-300 font-medium select-none">—</span>
+                                                        )}
                                                     </td>
                                                 );
                                             })}

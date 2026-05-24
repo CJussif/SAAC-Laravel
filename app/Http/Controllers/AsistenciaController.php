@@ -141,6 +141,9 @@ class AsistenciaController extends Controller
             ];
         })->sortBy('nombre', SORT_NATURAL | SORT_FLAG_CASE)->values()->toArray();
 
+        $actividadSeleccionada = $actividadesCollection->firstWhere('id', $selectedGrupoId);
+        $diasClase = $actividadSeleccionada ? $this->parseDaysFromHorario($actividadSeleccionada->horario) : [0, 1, 2, 3, 4];
+
         // Render Inertia view 'Docente/Asistencia'
         return Inertia::render('Docente/Asistencia', [
             'grupos' => $grupos,
@@ -149,6 +152,7 @@ class AsistenciaController extends Controller
             'semana' => $semana,
             'weekRange' => $weekRange,
             'weekDates' => $weekDates,
+            'diasClase' => $diasClase,
         ]);
     }
 
@@ -268,5 +272,36 @@ class AsistenciaController extends Controller
             12 => 'Dic',
         ];
         return $months[$monthNum] ?? '';
+    }
+
+    /**
+     * Parse class days from schedule string.
+     */
+    private function parseDaysFromHorario(string $horario): array
+    {
+        $horarioLower = mb_strtolower($horario, 'UTF-8');
+        $horarioLower = str_replace(['á', 'é', 'í', 'ó', 'ú'], ['a', 'e', 'i', 'o', 'u'], $horarioLower);
+
+        $daysMap = [
+            'lun' => 0,
+            'mar' => 1,
+            'mie' => 2,
+            'jue' => 3,
+            'vie' => 4,
+        ];
+
+        $diasClase = [];
+        foreach ($daysMap as $key => $index) {
+            if (str_contains($horarioLower, $key)) {
+                $diasClase[] = $index;
+            }
+        }
+
+        if (empty($diasClase)) {
+            return [0, 1, 2, 3, 4];
+        }
+
+        sort($diasClase);
+        return $diasClase;
     }
 }
