@@ -2,12 +2,6 @@ import InputError from '@/Components/InputError';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 
-const ROLES = [
-    { value: 'alumno',        label: 'Estudiante' },
-    { value: 'docente',       label: 'Docente' },
-    { value: 'administrador', label: 'Admin' },
-];
-
 export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
@@ -29,19 +23,6 @@ export default function Login({ status, canResetPassword }) {
                     {status}
                 </div>
             )}
-
-            {/* Tabs de rol */}
-            <div className="mb-6 flex rounded-lg bg-cream-200 p-1">
-                {ROLES.map((r) => (
-                    <button
-                        key={r.value}
-                        type="button"
-                        className="flex-1 rounded-md py-1.5 text-xs font-semibold transition-all duration-150 text-gray-500 hover:text-gray-700"
-                    >
-                        {r.label}
-                    </button>
-                ))}
-            </div>
 
             <form onSubmit={submit} className="space-y-4">
                 <div>
