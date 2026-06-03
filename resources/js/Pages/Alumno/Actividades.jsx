@@ -26,7 +26,7 @@ const CATEGORY_GRADIENTS = {
     academica: 'from-teal-500 to-teal-700',
 };
 
-function ActividadCard({ act, onInscribirse }) {
+function ActividadCard({ act, onInscribirse, isProcessing }) {
     const agotado = act.estatus === 'agotado';
     const inscrito = act.ya_inscrito;
     const gradient = CATEGORY_GRADIENTS[act.tipo] || 'from-blue-500 to-blue-700';
@@ -81,9 +81,25 @@ function ActividadCard({ act, onInscribirse }) {
                 ) : (
                     <button
                         onClick={() => onInscribirse && onInscribirse(act.id)}
-                        className="mt-auto w-full rounded-lg py-2 text-sm font-semibold transition-all active:scale-[0.98] bg-guinda text-white hover:bg-guinda-700"
+                        disabled={isProcessing}
+                        className={[
+                            'mt-auto w-full rounded-lg py-2 text-sm font-semibold transition-all',
+                            isProcessing
+                                ? 'cursor-not-allowed bg-guinda/60 text-white/80'
+                                : 'active:scale-[0.98] bg-guinda text-white hover:bg-guinda-700',
+                        ].join(' ')}
                     >
-                        Inscribirse
+                        {isProcessing ? (
+                            <span className="flex items-center justify-center gap-2">
+                                <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                                </svg>
+                                Procesando…
+                            </span>
+                        ) : (
+                            'Inscribirse'
+                        )}
                     </button>
                 )}
             </div>
@@ -98,6 +114,7 @@ export default function Actividades({ actividades = [], inscripcionesActivas = [
     const [selectedCategory, setSelectedCategory] = useState('Todas');
     const [selectedStatus, setSelectedStatus] = useState('Todos');
     const [currentPage, setCurrentPage] = useState(1);
+    const [processingId, setProcessingId] = useState(null);
 
     const normalizeText = (text) => {
         return text
@@ -133,7 +150,13 @@ export default function Actividades({ actividades = [], inscripcionesActivas = [
     );
 
     const handleInscribirse = (id) => {
-        router.post(route('inscripciones.store'), { actividad_id: id });
+        if (processingId !== null) return;
+        setProcessingId(id);
+        router.post(
+            route('inscripciones.store'),
+            { actividad_id: id },
+            { onFinish: () => setProcessingId(null) }
+        );
     };
 
     const creditos = alumno?.creditos_acumulados || 0;
@@ -215,7 +238,8 @@ export default function Actividades({ actividades = [], inscripcionesActivas = [
                                 <ActividadCard 
                                     key={act.id} 
                                     act={act} 
-                                    onInscribirse={handleInscribirse} 
+                                    onInscribirse={handleInscribirse}
+                                    isProcessing={processingId === act.id}
                                 />
                             ))}
                         </div>
@@ -312,4 +336,3 @@ export default function Actividades({ actividades = [], inscripcionesActivas = [
         </AuthenticatedLayout>
     );
 }
-
