@@ -49,6 +49,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin/catalogo', [AdminActividadController::class, 'store'])->name('admin.catalogo.store');
     Route::put('/admin/catalogo/{actividad}', [AdminActividadController::class, 'update'])->name('admin.catalogo.update');
     Route::delete('/admin/catalogo/{actividad}', [AdminActividadController::class, 'destroy'])->name('admin.catalogo.destroy');
+    // Formulario dedicado para crear actividades
+    Route::get('/admin/actividades/create', [AdminActividadController::class, 'create'])->name('admin.actividades.create');
+    Route::post('/admin/actividades', [AdminActividadController::class, 'store'])->name('admin.actividades.store');
     Route::get('/admin/evidencias', [AdminEvidenciaController::class, 'index'])->name('admin.evidencias');
     Route::post('/admin/evidencias/{solicitud}/validar', [AdminEvidenciaController::class, 'validar'])->name('admin.evidencias.validar');
     Route::get('/admin/alumnos',     fn () => Inertia::render('Admin/Alumnos'))->name('admin.alumnos');
