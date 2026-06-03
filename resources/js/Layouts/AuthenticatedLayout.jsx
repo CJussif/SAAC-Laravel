@@ -86,7 +86,7 @@ function Sidebar({ user, currentPath, onClose }) {
             {canCreateActivity && (
                 <div className="px-4 pb-4">
                     <Link
-                        href="/actividades/nueva"
+                        href={route('admin.actividades.create')}
                         className="flex w-full items-center justify-center gap-2 rounded-lg bg-guinda py-2 text-sm font-semibold text-white transition-colors hover:bg-guinda-700 active:scale-[0.98]"
                     >
                         <PlusIcon />

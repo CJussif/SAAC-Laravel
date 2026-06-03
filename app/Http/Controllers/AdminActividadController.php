@@ -43,6 +43,29 @@ class AdminActividadController extends Controller
     }
 
     /**
+     * Show the form for creating a new activity.
+     */
+    public function create(Request $request)
+    {
+        $user = $request->user();
+        if (!$user || $user->rol !== 'administrador') {
+            return redirect()->route('dashboard');
+        }
+
+        $docentes = Docente::orderBy('apellido_paterno')
+            ->orderBy('nombre')
+            ->get(['id', 'nombre', 'apellido_paterno', 'apellido_materno'])
+            ->map(fn ($d) => [
+                'id'             => $d->id,
+                'nombre_completo' => "{$d->nombre} {$d->apellido_paterno} {$d->apellido_materno}",
+            ]);
+
+        return Inertia::render('Admin/Actividades/Create', [
+            'docentes' => $docentes,
+        ]);
+    }
+
+    /**
      * Store a newly created activity in storage.
      */
     public function store(Request $request)
@@ -53,18 +76,20 @@ class AdminActividadController extends Controller
         }
 
         $validated = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'nullable|string',
-            'creditos' => 'required|integer|min:1',
-            'cupo_maximo' => 'required|integer|min:1',
-            'horario' => 'required|string|max:255',
-            'docente_id' => 'required|exists:docentes,id',
-            'tipo_periodo' => 'required|in:semestral,intersemestral',
+            'nombre'       => 'required|string|max:255',
+            'descripcion'  => 'nullable|string',
+            'creditos'     => 'required|integer|min:1',
+            'cupo_maximo'  => 'required|integer|min:1',
+            'horario'      => 'required|string|max:255',
+            'docente_id'   => 'required|integer|exists:docentes,id',
+            'tipo_periodo' => 'required|string|in:semestral,intersemestral',
         ]);
 
         Actividad::create($validated);
 
-        return redirect()->back()->with('success', 'Actividad complementaria creada correctamente.');
+        return redirect()
+            ->route('admin.catalogo')
+            ->with('success', 'Actividad complementaria creada correctamente.');
     }
 
     /**
