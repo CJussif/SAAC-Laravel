@@ -58,6 +58,7 @@ class HandleInertiaRequests extends Middleware
                 'error' => $request->session()->get('error'),
                 'status' => $request->session()->get('status'),
             ],
+            'current_semester' => 'Semestre 2026-1',
         ];
     }
 }

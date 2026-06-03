@@ -7,7 +7,7 @@ import {
     LogOutIcon, BellIcon, SearchIcon, PlusIcon, MenuIcon, XIcon,
 } from '@/Components/Icons';
 
-const CICLO = '2024-2025';
+
 
 const ROL_LABEL = {
     alumno:        'Estudiante',
@@ -59,6 +59,7 @@ function SidebarLink({ item, isActive }) {
 }
 
 function Sidebar({ user, currentPath, onClose }) {
+    const { current_semester } = usePage().props;
     const rol = user?.rol ?? 'alumno';
     const links = NAV[rol] ?? NAV.alumno;
     const canCreateActivity = rol === 'administrador' || rol === 'docente';
@@ -79,7 +80,7 @@ function Sidebar({ user, currentPath, onClose }) {
                 <p className="text-xs font-semibold uppercase tracking-wider text-white/50">
                     {ROL_LABEL[rol] ?? 'Usuario'}
                 </p>
-                <p className="mt-0.5 text-xs text-white/70">Ciclo Escolar {CICLO}</p>
+                <p className="mt-0.5 text-xs text-white/70">{current_semester}</p>
             </div>
 
             {/* Nueva Actividad button (admin/docente) */}
