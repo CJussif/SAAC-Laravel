@@ -255,12 +255,14 @@ export default function CargaEvidencias({ solicitudes = [] }) {
                         {/* Horas */}
                         <div>
                             <label htmlFor="horas" className="mb-1.5 block text-sm font-medium text-gray-700">
-                                Total de Horas / Duración
+                                Total de Horas / Duración <span className="text-guinda">*</span>
                             </label>
                             <input
                                 id="horas"
                                 type="number"
                                 min="1"
+                                max="999"
+                                required
                                 value={data.horas}
                                 onChange={(e) => setData('horas', e.target.value)}
                                 placeholder="Ej. 40"
@@ -305,10 +307,10 @@ export default function CargaEvidencias({ solicitudes = [] }) {
                         <div className="flex justify-end pt-2">
                             <button
                                 type="submit"
-                                disabled={processing || !data.archivo || !data.tipo_actividad}
+                                disabled={processing || !data.archivo || !data.tipo_actividad || !data.horas}
                                 className={[
                                     'btn-guinda transition-all',
-                                    (processing || !data.archivo || !data.tipo_actividad) && 'cursor-not-allowed opacity-50',
+                                    (processing || !data.archivo || !data.tipo_actividad || !data.horas) && 'cursor-not-allowed opacity-50',
                                 ].join(' ')}
                             >
                                 {processing ? 'Enviando...' : 'Enviar Solicitud'}
