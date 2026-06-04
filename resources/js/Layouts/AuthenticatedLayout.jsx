@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import {
@@ -141,6 +141,135 @@ function Sidebar({ user, currentPath, onClose }) {
     );
 }
 
+// ── Helpers ─────────────────────────────────────────────────────────────────
+function timeAgo(isoString) {
+    const diff = Math.floor((Date.now() - new Date(isoString)) / 1000);
+    if (diff < 60)   return 'Hace un momento';
+    if (diff < 3600) return `Hace ${Math.floor(diff / 60)} min`;
+    if (diff < 86400) return `Hace ${Math.floor(diff / 3600)} h`;
+    return `Hace ${Math.floor(diff / 86400)} d`;
+}
+
+const ICON_MAP = {
+    info:    { bg: 'bg-blue-100',   text: 'text-blue-600',  symbol: 'ℹ' },
+    warning: { bg: 'bg-amber-100',  text: 'text-amber-600', symbol: '⚠' },
+    success: { bg: 'bg-green-100',  text: 'text-green-700', symbol: '✓' },
+    error:   { bg: 'bg-red-100',    text: 'text-red-600',   symbol: '✕' },
+};
+
+// ── NotificationsDropdown ─────────────────────────────────────────────────────
+function NotificationsDropdown({ notifications = [] }) {
+    const [open, setOpen] = useState(false);
+    const ref = useRef(null);
+    const unreadCount = notifications.filter((n) => !n.read_at).length;
+
+    // Close on outside click
+    useEffect(() => {
+        function handleClick(e) {
+            if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+        }
+        document.addEventListener('mousedown', handleClick);
+        return () => document.removeEventListener('mousedown', handleClick);
+    }, []);
+
+    return (
+        <div ref={ref} className="relative">
+            {/* Bell trigger */}
+            <button
+                onClick={() => setOpen((o) => !o)}
+                aria-label="Notificaciones"
+                className="relative rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-cream-300 hover:text-gray-700 focus:outline-none"
+            >
+                <BellIcon />
+                {unreadCount > 0 && (
+                    <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-guinda text-[9px] font-bold text-white leading-none">
+                        {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                )}
+            </button>
+
+            {/* Dropdown panel */}
+            {open && (
+                <div
+                    className="absolute right-0 z-50 mt-2 w-80 origin-top-right rounded-xl border border-cream-400 bg-white shadow-card-md"
+                    style={{ animation: 'fadeSlideDown 0.15s ease-out' }}
+                >
+                    {/* Header */}
+                    <div className="flex items-center justify-between border-b border-cream-300 px-4 py-3">
+                        <h3 className="text-sm font-semibold text-gray-800">Notificaciones</h3>
+                        {unreadCount > 0 && (
+                            <span className="rounded-full bg-guinda/10 px-2 py-0.5 text-xs font-semibold text-guinda">
+                                {unreadCount} nueva{unreadCount > 1 ? 's' : ''}
+                            </span>
+                        )}
+                    </div>
+
+                    {/* List */}
+                    <ul className="max-h-72 overflow-y-auto divide-y divide-cream-200">
+                        {notifications.length === 0 ? (
+                            <li className="px-4 py-6 text-center text-sm text-gray-400">
+                                No tienes notificaciones.
+                            </li>
+                        ) : (
+                            notifications.map((n) => {
+                                const iconCfg = ICON_MAP[n.data?.icon] ?? ICON_MAP.info;
+                                const isUnread = !n.read_at;
+                                return (
+                                    <li
+                                        key={n.id}
+                                        className={[
+                                            'flex gap-3 px-4 py-3 transition-colors hover:bg-cream-50',
+                                            isUnread ? 'bg-guinda/[0.03]' : '',
+                                        ].join(' ')}
+                                    >
+                                        {/* Icon bubble */}
+                                        <span
+                                            className={`mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold ${iconCfg.bg} ${iconCfg.text}`}
+                                        >
+                                            {iconCfg.symbol}
+                                        </span>
+
+                                        {/* Content */}
+                                        <div className="flex-1 min-w-0">
+                                            <p className={`text-xs leading-snug ${ isUnread ? 'font-semibold text-gray-800' : 'font-medium text-gray-600' }`}>
+                                                {n.data?.message}
+                                            </p>
+                                            <p className="mt-1 text-[10px] text-gray-400">{timeAgo(n.created_at)}</p>
+                                        </div>
+
+                                        {/* Unread dot */}
+                                        {isUnread && (
+                                            <span className="mt-1.5 h-2 w-2 flex-shrink-0 rounded-full bg-guinda" />
+                                        )}
+                                    </li>
+                                );
+                            })
+                        )}
+                    </ul>
+
+                    {/* Footer */}
+                    <div className="border-t border-cream-300 px-4 py-2.5 text-center">
+                        <button
+                            onClick={() => setOpen(false)}
+                            className="text-xs font-medium text-guinda hover:text-guinda-700 transition-colors"
+                        >
+                            Ver todas las notificaciones
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Micro-animation keyframe (injected inline once) */}
+            <style>{`
+                @keyframes fadeSlideDown {
+                    from { opacity: 0; transform: translateY(-6px); }
+                    to   { opacity: 1; transform: translateY(0); }
+                }
+            `}</style>
+        </div>
+    );
+}
+
 function Topbar({ user, header }) {
     return (
         <div className="flex h-14 items-center justify-between gap-4 border-b border-cream-400 bg-cream-100 px-6">
@@ -170,10 +299,7 @@ function Topbar({ user, header }) {
                     />
                 </div>
 
-                <button className="relative rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-cream-300 hover:text-gray-700">
-                    <BellIcon />
-                    <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-guinda" />
-                </button>
+                <NotificationsDropdown notifications={usePage().props.auth?.notifications ?? []} />
 
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-guinda text-xs font-bold text-white select-none">
                     {user?.name?.[0]?.toUpperCase() ?? 'U'}
