@@ -7,6 +7,7 @@ use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\AdminActividadController;
 use App\Http\Controllers\AlumnoEvidenciaController;
 use App\Http\Controllers\AdminEvidenciaController;
+use App\Http\Controllers\AdminSolicitudController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -49,11 +50,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin/catalogo', [AdminActividadController::class, 'store'])->name('admin.catalogo.store');
     Route::put('/admin/catalogo/{actividad}', [AdminActividadController::class, 'update'])->name('admin.catalogo.update');
     Route::delete('/admin/catalogo/{actividad}', [AdminActividadController::class, 'destroy'])->name('admin.catalogo.destroy');
-    // Formulario dedicado para crear actividades
-    Route::get('/admin/actividades/create', [AdminActividadController::class, 'create'])->name('admin.actividades.create');
-    Route::post('/admin/actividades', [AdminActividadController::class, 'store'])->name('admin.actividades.store');
     Route::get('/admin/evidencias', [AdminEvidenciaController::class, 'index'])->name('admin.evidencias');
     Route::post('/admin/evidencias/{solicitud}/validar', [AdminEvidenciaController::class, 'validar'])->name('admin.evidencias.validar');
+    Route::get('/admin/actividades/create', [AdminActividadController::class, 'create'])->name('admin.actividades.create');
+
+    // Panel de revisión de solicitudes (evidencias externas)
+    Route::get('/admin/solicitudes', [AdminSolicitudController::class, 'index'])->name('admin.solicitudes.index');
+    Route::put('/admin/solicitudes/{id}', [AdminSolicitudController::class, 'update'])->name('admin.solicitudes.update');
     Route::get('/admin/alumnos',     fn () => Inertia::render('Admin/Alumnos'))->name('admin.alumnos');
     Route::get('/admin/constancias', fn () => Inertia::render('Admin/Constancias'))->name('admin.constancias');
 });

@@ -33,7 +33,7 @@ const NAV = {
         { label: 'Panel Principal',      routeName: 'dashboard',           icon: HomeIcon },
         { label: 'Catálogo Actividades', routeName: 'admin.catalogo',      icon: GridIcon },
         { label: 'Gestión de Alumnos',   routeName: 'admin.alumnos',       icon: UsersIcon },
-        { label: 'Validar Evidencias',   routeName: 'admin.evidencias',    icon: CheckCircleIcon },
+        { label: 'Validar Evidencias',   routeName: 'admin.solicitudes.index',    icon: CheckCircleIcon },
         { label: 'Constancias',          routeName: 'admin.constancias',   icon: DocumentIcon },
     ],
 };
