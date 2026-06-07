@@ -252,12 +252,13 @@ function NotificationsDropdown({ notifications = [] }) {
 
                     {/* Footer */}
                     <div className="border-t border-cream-300 px-4 py-2.5 text-center">
-                        <button
+                        <Link
+                            href={route('notificaciones.index')}
                             onClick={() => setOpen(false)}
-                            className="text-xs font-medium text-guinda hover:text-guinda-700 transition-colors"
+                            className="block w-full text-xs font-medium text-guinda hover:text-guinda-700 transition-colors"
                         >
                             Ver todas las notificaciones
-                        </button>
+                        </Link>
                     </div>
                 </div>
             )}
