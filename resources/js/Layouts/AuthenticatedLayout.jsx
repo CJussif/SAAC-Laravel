@@ -215,10 +215,13 @@ function NotificationsDropdown({ notifications = [] }) {
                                 const iconCfg = ICON_MAP[n.data?.icon] ?? ICON_MAP.info;
                                 const isUnread = !n.read_at;
                                 return (
-                                    <li
+                                    <Link
                                         key={n.id}
+                                        href={route('notificaciones.leer', n.id)}
+                                        method="post"
+                                        as="button"
                                         className={[
-                                            'flex gap-3 px-4 py-3 transition-colors hover:bg-cream-50',
+                                            'flex w-full text-left gap-3 px-4 py-3 transition-colors hover:bg-cream-50',
                                             isUnread ? 'bg-guinda/[0.03]' : '',
                                         ].join(' ')}
                                     >
@@ -241,7 +244,7 @@ function NotificationsDropdown({ notifications = [] }) {
                                         {isUnread && (
                                             <span className="mt-1.5 h-2 w-2 flex-shrink-0 rounded-full bg-guinda" />
                                         )}
-                                    </li>
+                                    </Link>
                                 );
                             })
                         )}

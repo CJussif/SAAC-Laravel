@@ -41,35 +41,12 @@ class HandleInertiaRequests extends Middleware
             }
         }
 
-        // ── Dummy notifications (reemplazar con consulta real cuando esté listo) ──
-        $dummyNotifications = $user ? [
-            [
-                'id'         => 'dummy-1',
-                'type'       => 'App\\Notifications\\BienvenidaNotification',
-                'data'       => [
-                    'message' => 'Bienvenido al SAAC. ¡Consulta el catálogo de actividades disponibles!',
-                    'icon'    => 'info',
-                ],
-                'read_at'    => null,
-                'created_at' => now()->subHours(2)->toISOString(),
-            ],
-            [
-                'id'         => 'dummy-2',
-                'type'       => 'App\\Notifications\\EvidenciaRevisadaNotification',
-                'data'       => [
-                    'message' => 'Tu evidencia externa está en revisión por el administrador.',
-                    'icon'    => 'warning',
-                ],
-                'read_at'    => null,
-                'created_at' => now()->subDay()->toISOString(),
-            ],
-        ] : [];
-
         return [
             ...parent::share($request),
             'auth' => [
                 'user' => $user,
-                'notifications' => $dummyNotifications,
+                // Aquí está la corrección: jalamos las notificaciones reales no leídas
+                'notifications' => $user ? $user->unreadNotifications : [],
                 'adminStats' => $user && $user->rol === 'administrador' ? [
                     'totalAlumnos' => \App\Models\Alumno::count(),
                     'totalActividades' => \App\Models\Actividad::count(),
