@@ -139,7 +139,7 @@ export default function Expedientes({ expedientes, actividades }) {
                                         </td>
                                         <td className="px-5 py-3.5 text-center">
                                             <span className="tabular-nums text-xs font-medium text-gray-600">
-                                                {exp.sesiones_cursadas}/{exp.sesiones_total}
+                                                {exp.sesiones.cursadas}/{exp.sesiones.total}
                                             </span>
                                         </td>
                                         <td className="px-5 py-3.5"><AsistenciaBar pct={exp.porcentaje_asistencia} /></td>
