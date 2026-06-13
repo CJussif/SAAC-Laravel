@@ -1,0 +1,66 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Inscripcion;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+
+class AdminConstanciasController extends Controller
+{
+    public function index(Request $request)
+    {
+        $user = $request->user();
+        if (!$user || $user->rol !== 'administrador') {
+            return redirect()->route('dashboard');
+        }
+
+        $query = Inscripcion::with(['alumno', 'actividad'])
+            ->whereNotNull('ruta_constancia');
+
+        if ($search = $request->input('search')) {
+            $query->whereHas('alumno', fn ($q) => $q
+                ->where('nombre', 'like', "%{$search}%")
+                ->orWhere('apellido_paterno', 'like', "%{$search}%")
+                ->orWhere('matricula', 'like', "%{$search}%")
+            );
+        }
+
+        if ($tipo = $request->input('tipo')) {
+            $query->whereHas('actividad', fn ($q) => $q->where('nombre', 'like', "%{$tipo}%"));
+        }
+
+        $inscripciones = $query->orderBy('updated_at', 'desc')->get();
+
+        $constancias = $inscripciones->map(fn ($ins) => [
+            'folio'           => 'CON-' . $ins->updated_at->year . '-' . str_pad($ins->id, 4, '0', STR_PAD_LEFT),
+            'nombre'          => "{$ins->alumno->nombre} {$ins->alumno->apellido_paterno} {$ins->alumno->apellido_materno}",
+            'matricula'       => $ins->alumno->matricula,
+            'carrera'         => $ins->alumno->carrera,
+            'actividad'       => $ins->actividad->nombre,
+            'tipo'            => $this->resolverTipo($ins->actividad->nombre),
+            'creditos'        => $ins->actividad->creditos,
+            'fecha'           => $ins->updated_at->format('Y-m-d'),
+            'ruta_constancia' => $ins->ruta_constancia,
+        ])->values()->toArray();
+
+        $kpis = [
+            'total'             => $inscripciones->count(),
+            'alumnos_cubiertos' => $inscripciones->pluck('alumno_id')->unique()->count(),
+        ];
+
+        return Inertia::render('Admin/Constancias', [
+            'constancias' => $constancias,
+            'kpis'        => $kpis,
+            'filters'     => $request->only(['search', 'tipo']),
+        ]);
+    }
+
+    private function resolverTipo(string $nombre): string
+    {
+        $lower = mb_strtolower($nombre, 'UTF-8');
+        return (str_contains($lower, 'yoga') || str_contains($lower, 'basquet') || str_contains($lower, 'deport'))
+            ? 'deportiva'
+            : 'cultural';
+    }
+}

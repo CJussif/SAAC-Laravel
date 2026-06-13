@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminSolicitudController;
 use App\Http\Controllers\DocenteExpedientesController;
 use App\Http\Controllers\DocenteGruposController;
 use App\Http\Controllers\AdminAlumnosController;
+use App\Http\Controllers\AdminConstanciasController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -64,7 +65,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/admin/solicitudes/{id}', [AdminSolicitudController::class, 'update'])->name('admin.solicitudes.update');
     Route::get('/admin/alumnos', [AdminAlumnosController::class, 'index'])->name('admin.alumnos');
     Route::patch('/admin/alumnos/{alumno}', [AdminAlumnosController::class, 'updateCreditos'])->name('admin.alumnos.update');
-    Route::get('/admin/constancias', fn () => Inertia::render('Admin/Constancias'))->name('admin.constancias');
+    Route::get('/admin/constancias', [AdminConstanciasController::class, 'index'])->name('admin.constancias');
 });
 
 require __DIR__.'/auth.php';
