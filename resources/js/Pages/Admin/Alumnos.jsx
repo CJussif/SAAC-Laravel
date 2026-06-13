@@ -1,20 +1,8 @@
+import { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import StatCard from '@/Components/StatCard';
-import { Head } from '@inertiajs/react';
-import { UsersIcon, CheckCircleIcon, ClipboardIcon, SearchIcon, PlusIcon } from '@/Components/Icons';
-
-const ALUMNOS = [
-    { id: 1, matricula: '210001', nombre: 'Ana García López',       carrera: 'ISC', semestre: 6, creditos: 3, meta: 5, estatus: 'En Progreso' },
-    { id: 2, matricula: '210045', nombre: 'Luis Pérez Ramírez',     carrera: 'IGE', semestre: 4, creditos: 5, meta: 5, estatus: 'Acreditado' },
-    { id: 3, matricula: '210078', nombre: 'María Torres Vega',      carrera: 'ISC', semestre: 8, creditos: 5, meta: 5, estatus: 'Acreditado' },
-    { id: 4, matricula: '210103', nombre: 'Carlos Mendoza Ríos',    carrera: 'IDS', semestre: 2, creditos: 0, meta: 5, estatus: 'Sin Iniciar' },
-    { id: 5, matricula: '210134', nombre: 'Sofía Ramos Castro',     carrera: 'ISC', semestre: 6, creditos: 2, meta: 5, estatus: 'En Progreso' },
-    { id: 6, matricula: '210167', nombre: 'Diego Flores Núñez',     carrera: 'IGE', semestre: 4, creditos: 4, meta: 5, estatus: 'En Progreso' },
-    { id: 7, matricula: '210188', nombre: 'Valeria López Soto',     carrera: 'IDS', semestre: 8, creditos: 5, meta: 5, estatus: 'Acreditado' },
-    { id: 8, matricula: '210209', nombre: 'Roberto Chávez Medina',  carrera: 'ISC', semestre: 2, creditos: 1, meta: 5, estatus: 'En Progreso' },
-];
-
-const CARRERAS = ['Todas las Carreras', 'ISC', 'IGE', 'IDS'];
+import { Head, useForm, router } from '@inertiajs/react';
+import { UsersIcon, CheckCircleIcon, ClipboardIcon, SearchIcon } from '@/Components/Icons';
 
 const ESTATUS_STYLE = {
     'Acreditado':  'bg-green-100 text-green-700',
@@ -35,9 +23,31 @@ function CreditosMini({ creditos, meta }) {
     );
 }
 
-export default function Alumnos() {
-    const acreditados = ALUMNOS.filter((a) => a.estatus === 'Acreditado').length;
-    const enProgreso  = ALUMNOS.filter((a) => a.estatus === 'En Progreso').length;
+export default function Alumnos({ alumnos, kpis, filters }) {
+    const [editando, setEditando] = useState(null);
+    const [search, setSearch]   = useState(filters?.search ?? '');
+    const [carrera, setCarrera] = useState(filters?.carrera ?? '');
+    const [estatus, setEstatus] = useState(filters?.estatus ?? '');
+
+    const { data, setData, patch, processing, errors, reset } = useForm({
+        creditos_acumulados: '',
+    });
+
+    const aplicarFiltro = (nuevosFiltros) => {
+        router.get(route('admin.alumnos'), nuevosFiltros, { preserveState: true, replace: true });
+    };
+
+    const abrirEditar = (alumno) => {
+        setEditando(alumno);
+        setData('creditos_acumulados', alumno.creditos_acumulados);
+    };
+
+    const cerrarEditar = () => { setEditando(null); reset(); };
+
+    const guardarCreditos = (e) => {
+        e.preventDefault();
+        patch(route('admin.alumnos.update', editando.id), { onSuccess: cerrarEditar });
+    };
 
     return (
         <AuthenticatedLayout header="Gestión de Alumnos">
@@ -51,16 +61,13 @@ export default function Alumnos() {
                             Consulta el avance de créditos complementarios de todos los estudiantes del plantel.
                         </p>
                     </div>
-                    <button className="btn-guinda flex-shrink-0">
-                        <PlusIcon /> Agregar Alumno
-                    </button>
                 </div>
 
                 {/* KPIs */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                    <StatCard label="Total de Alumnos"  value={ALUMNOS.length.toString()} sub="Registrados en el sistema" icon={UsersIcon} />
-                    <StatCard label="Créditos Acreditados" value={acreditados.toString()} sub="Requisito cumplido"       icon={CheckCircleIcon} accent="green" />
-                    <StatCard label="En Progreso"       value={enProgreso.toString()}     sub="Requieren seguimiento"   icon={ClipboardIcon} accent="amber" />
+                    <StatCard label="Total de Alumnos"     value={kpis.total.toString()}       sub="Registrados en el sistema" icon={UsersIcon} />
+                    <StatCard label="Créditos Acreditados" value={kpis.acreditados.toString()} sub="Requisito cumplido"        icon={CheckCircleIcon} accent="green" />
+                    <StatCard label="En Progreso"          value={kpis.en_progreso.toString()}  sub="Requieren seguimiento"    icon={ClipboardIcon} accent="amber" />
                 </div>
 
                 {/* Tabla */}
@@ -73,15 +80,26 @@ export default function Alumnos() {
                             </span>
                             <input
                                 type="search"
+                                value={search}
+                                onChange={(e) => { setSearch(e.target.value); aplicarFiltro({ search: e.target.value, carrera, estatus }); }}
                                 placeholder="Buscar por nombre o matrícula..."
                                 className="w-full rounded-lg border border-cream-400 bg-white py-1.5 pl-9 pr-3 text-sm placeholder-gray-400 focus:border-guinda focus:outline-none focus:ring-1 focus:ring-guinda/30"
                             />
                         </div>
-                        <select className="rounded-lg border border-cream-400 bg-white px-3 py-1.5 text-sm text-gray-600 focus:border-guinda focus:outline-none">
-                            {CARRERAS.map((c) => <option key={c}>{c}</option>)}
+                        <select
+                            value={carrera}
+                            onChange={(e) => { setCarrera(e.target.value); aplicarFiltro({ search, carrera: e.target.value, estatus }); }}
+                            className="rounded-lg border border-cream-400 bg-white px-3 py-1.5 text-sm text-gray-600 focus:border-guinda focus:outline-none"
+                        >
+                            <option value="">Todas las Carreras</option>
+                            {['ISC', 'IGE', 'IDS'].map((c) => <option key={c}>{c}</option>)}
                         </select>
-                        <select className="rounded-lg border border-cream-400 bg-white px-3 py-1.5 text-sm text-gray-600 focus:border-guinda focus:outline-none">
-                            <option>Todos los Estatus</option>
+                        <select
+                            value={estatus}
+                            onChange={(e) => { setEstatus(e.target.value); aplicarFiltro({ search, carrera, estatus: e.target.value }); }}
+                            className="rounded-lg border border-cream-400 bg-white px-3 py-1.5 text-sm text-gray-600 focus:border-guinda focus:outline-none"
+                        >
+                            <option value="">Todos los Estatus</option>
                             <option>Acreditado</option>
                             <option>En Progreso</option>
                             <option>Sin Iniciar</option>
@@ -100,7 +118,7 @@ export default function Alumnos() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-cream-300">
-                                {ALUMNOS.map((alumno) => (
+                                {alumnos.data.map((alumno) => (
                                     <tr key={alumno.id} className="hover:bg-cream-50 transition-colors">
                                         <td className="px-5 py-3.5 font-mono text-xs font-semibold text-gray-500">
                                             {alumno.matricula}
@@ -122,28 +140,21 @@ export default function Alumnos() {
                                             {alumno.semestre}°
                                         </td>
                                         <td className="px-5 py-3.5 whitespace-nowrap">
-                                            <CreditosMini creditos={alumno.creditos} meta={alumno.meta} />
+                                            <CreditosMini creditos={alumno.creditos_acumulados} meta={alumno.creditos_requeridos} />
                                         </td>
                                         <td className="px-5 py-3.5">
-                                            <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${ESTATUS_STYLE[alumno.estatus]}`}>
+                                            <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${ESTATUS_STYLE[alumno.estatus] ?? 'bg-gray-100 text-gray-500'}`}>
                                                 {alumno.estatus}
                                             </span>
                                         </td>
                                         <td className="px-5 py-3.5">
-                                            <div className="flex gap-1">
-                                                <button
-                                                    title="Ver expediente"
-                                                    className="rounded-md px-2.5 py-1.5 text-xs font-medium text-gray-500 hover:bg-cream-200 hover:text-guinda transition-colors"
-                                                >
-                                                    Ver
-                                                </button>
-                                                <button
-                                                    title="Editar"
-                                                    className="rounded-md px-2.5 py-1.5 text-xs font-medium text-gray-500 hover:bg-cream-200 hover:text-gray-700 transition-colors"
-                                                >
-                                                    Editar
-                                                </button>
-                                            </div>
+                                            <button
+                                                onClick={() => abrirEditar(alumno)}
+                                                title="Editar"
+                                                className="rounded-md px-2.5 py-1.5 text-xs font-medium text-gray-500 hover:bg-cream-200 hover:text-gray-700 transition-colors"
+                                            >
+                                                Editar
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}
@@ -151,25 +162,67 @@ export default function Alumnos() {
                         </table>
                     </div>
 
-                    {/* Footer */}
+                    {/* Footer / Paginación */}
                     <div className="flex items-center justify-between border-t border-cream-400 px-5 py-3">
-                        <p className="text-xs text-gray-400">Mostrando 1 – 8 de 312 alumnos</p>
+                        <p className="text-xs text-gray-400">
+                            Mostrando {alumnos.from ?? 0}–{alumnos.to ?? 0} de {alumnos.total} alumnos
+                        </p>
                         <div className="flex gap-1">
-                            {[1, 2, 3, '…', 40].map((n, i) => (
+                            {alumnos.links.map((link, i) => (
                                 <button
                                     key={i}
+                                    disabled={!link.url}
+                                    onClick={() => link.url && router.get(link.url)}
                                     className={[
                                         'h-7 min-w-[28px] rounded-md px-2 text-xs font-medium transition-colors',
-                                        n === 1 ? 'bg-guinda text-white' : 'text-gray-500 hover:bg-cream-200',
+                                        link.active
+                                            ? 'bg-guinda text-white'
+                                            : 'text-gray-500 hover:bg-cream-200 disabled:opacity-40',
                                     ].join(' ')}
-                                >
-                                    {n}
-                                </button>
+                                    dangerouslySetInnerHTML={{ __html: link.label }}
+                                />
                             ))}
                         </div>
                     </div>
                 </div>
             </div>
+
+            {/* Modal de edición */}
+            {editando && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+                    <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+                        <h3 className="mb-1 text-lg font-bold text-gray-800">Editar créditos</h3>
+                        <p className="mb-4 text-sm text-gray-500">{editando.nombre}</p>
+                        <form onSubmit={guardarCreditos} className="space-y-4">
+                            <div>
+                                <label className="block text-xs font-semibold text-gray-600 mb-1">
+                                    Créditos acumulados (0–10)
+                                </label>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    max="10"
+                                    value={data.creditos_acumulados}
+                                    onChange={(e) => setData('creditos_acumulados', parseInt(e.target.value))}
+                                    className="w-full rounded-lg border border-cream-400 px-3 py-2 text-sm focus:border-guinda focus:outline-none focus:ring-1 focus:ring-guinda/30"
+                                />
+                                {errors.creditos_acumulados && (
+                                    <p className="mt-1 text-xs text-red-500">{errors.creditos_acumulados}</p>
+                                )}
+                            </div>
+                            <div className="flex gap-2 justify-end">
+                                <button type="button" onClick={cerrarEditar}
+                                    className="rounded-lg border border-cream-400 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-cream-100">
+                                    Cancelar
+                                </button>
+                                <button type="submit" disabled={processing} className="btn-guinda">
+                                    Guardar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </AuthenticatedLayout>
     );
 }
