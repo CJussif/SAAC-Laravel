@@ -2,70 +2,17 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import TipoBadge from '@/Components/TipoBadge';
 import { Head } from '@inertiajs/react';
 
-const GRUPOS = [
-    {
-        id: 1,
-        clave: 'CUL-07',
-        nombre: 'Taller de Danza Folklórica',
-        tipo: 'cultural',
-        horario: 'Lun, Mié y Vie — 09:00 a 11:00 hrs',
-        periodo: 'Semestral',
-        creditos: 1,
-        inscritos: 30,
-        cupo: 50,
-        activo: true,
-    },
-    {
-        id: 2,
-        clave: 'CUL-12',
-        nombre: 'Taller de Teatro Clásico',
-        tipo: 'cultural',
-        horario: 'Mar y Jue — 14:00 a 16:00 hrs',
-        periodo: 'Semestral',
-        creditos: 2,
-        inscritos: 22,
-        cupo: 25,
-        activo: true,
-    },
-    {
-        id: 3,
-        clave: 'CUL-03',
-        nombre: 'Coro Institucional TESCHA',
-        tipo: 'cultural',
-        horario: 'Vie — 16:00 a 18:00 hrs',
-        periodo: 'Intersemestral',
-        creditos: 1,
-        inscritos: 18,
-        cupo: 30,
-        activo: false,
-    },
-];
-
-const ALUMNOS = {
-    1: [
-        { matricula: '210001', nombre: 'Ana García López',       carrera: 'ISC', asistencia: 92, estatus: 'acreditado' },
-        { matricula: '210045', nombre: 'Luis Pérez Ramírez',     carrera: 'IGE', asistencia: 85, estatus: 'en-curso'   },
-        { matricula: '210078', nombre: 'María Torres Vega',      carrera: 'ISC', asistencia: 78, estatus: 'en-curso'   },
-        { matricula: '210103', nombre: 'Carlos Mendoza Ríos',    carrera: 'IDS', asistencia: 55, estatus: 'pendiente'  },
-        { matricula: '210134', nombre: 'Sofía Ramos Castro',     carrera: 'ISC', asistencia: 90, estatus: 'en-curso'   },
-    ],
-    2: [
-        { matricula: '210167', nombre: 'Diego Flores Núñez',     carrera: 'IGE', asistencia: 88, estatus: 'en-curso'  },
-        { matricula: '210188', nombre: 'Valeria López Soto',     carrera: 'IDS', asistencia: 95, estatus: 'en-curso'  },
-        { matricula: '210209', nombre: 'Roberto Chávez Medina',  carrera: 'ISC', asistencia: 60, estatus: 'pendiente' },
-    ],
-    3: [],
-};
-
 const ESTATUS_COLOR = {
     'acreditado': 'bg-green-100 text-green-700',
-    'en-curso':   'bg-amber-100 text-amber-700',
-    'pendiente':  'bg-red-100 text-red-600',
+    'en_curso':   'bg-amber-100 text-amber-700',
+    'inscrito':   'bg-blue-100 text-blue-700',
+    'reprobado':  'bg-red-100 text-red-600',
 };
 const ESTATUS_LABEL = {
     'acreditado': 'Acreditado',
-    'en-curso':   'En Curso',
-    'pendiente':  'En Riesgo',
+    'en_curso':   'En Curso',
+    'inscrito':   'Inscrito',
+    'reprobado':  'Reprobado',
 };
 
 function AsistenciaBar({ pct }) {
@@ -84,9 +31,9 @@ function AsistenciaBar({ pct }) {
 
 import { useState } from 'react';
 
-export default function Grupos() {
-    const [grupoActivo, setGrupoActivo] = useState(GRUPOS[0]);
-    const alumnos = ALUMNOS[grupoActivo.id] ?? [];
+export default function Grupos({ grupos, alumnosPorGrupo }) {
+    const [grupoActivo, setGrupoActivo] = useState(grupos[0] ?? null);
+    const alumnos = grupoActivo ? (alumnosPorGrupo[grupoActivo.id] ?? []) : [];
 
     return (
         <AuthenticatedLayout header="Mis Grupos">
@@ -106,13 +53,13 @@ export default function Grupos() {
                         <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-400">
                             Actividades asignadas
                         </p>
-                        {GRUPOS.map((g) => (
+                        {grupos.map((g) => (
                             <button
                                 key={g.id}
                                 onClick={() => setGrupoActivo(g)}
                                 className={[
                                     'w-full rounded-xl border p-4 text-left transition-all',
-                                    grupoActivo.id === g.id
+                                    grupoActivo?.id === g.id
                                         ? 'border-guinda bg-guinda/5 shadow-sm'
                                         : 'border-cream-400 bg-white hover:border-guinda/40 hover:bg-cream-50',
                                 ].join(' ')}
@@ -120,14 +67,14 @@ export default function Grupos() {
                                 <div className="flex items-start justify-between gap-2">
                                     <div className="min-w-0">
                                         <p className="font-mono text-[10px] font-bold text-gray-400">{g.clave}</p>
-                                        <p className={`mt-0.5 text-sm font-semibold leading-snug ${grupoActivo.id === g.id ? 'text-guinda' : 'text-gray-800'}`}>
+                                        <p className={`mt-0.5 text-sm font-semibold leading-snug ${grupoActivo?.id === g.id ? 'text-guinda' : 'text-gray-800'}`}>
                                             {g.nombre}
                                         </p>
                                     </div>
                                     <TipoBadge tipo={g.tipo} />
                                 </div>
                                 <div className="mt-2 flex items-center justify-between text-xs text-gray-400">
-                                    <span>{g.inscritos}/{g.cupo} alumnos</span>
+                                    <span>{g.inscritos}/{g.cupo_maximo} alumnos</span>
                                     <span className={g.activo ? 'text-green-600 font-medium' : 'text-gray-400'}>
                                         {g.activo ? '● Activo' : '○ Cerrado'}
                                     </span>
@@ -140,6 +87,7 @@ export default function Grupos() {
                     <div className="flex-1 min-w-0">
                         <div className="card overflow-hidden">
                             {/* Header del grupo seleccionado */}
+                            {grupoActivo && (
                             <div className="border-b border-cream-400 bg-cream-50 px-5 py-4">
                                 <div className="flex flex-wrap items-center justify-between gap-3">
                                     <div>
@@ -161,6 +109,7 @@ export default function Grupos() {
                                     </div>
                                 </div>
                             </div>
+                            )}
 
                             {alumnos.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -196,7 +145,7 @@ export default function Grupos() {
                                                         <span className="rounded bg-cream-200 px-2 py-0.5 text-xs font-semibold text-gray-600">{a.carrera}</span>
                                                     </td>
                                                     <td className="px-5 py-3.5 whitespace-nowrap">
-                                                        <AsistenciaBar pct={a.asistencia} />
+                                                        <AsistenciaBar pct={a.porcentaje_asistencia} />
                                                     </td>
                                                     <td className="px-5 py-3.5">
                                                         <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${ESTATUS_COLOR[a.estatus]}`}>
