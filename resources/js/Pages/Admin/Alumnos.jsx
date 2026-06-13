@@ -140,7 +140,7 @@ export default function Alumnos({ alumnos, kpis, filters }) {
                                             {alumno.semestre}°
                                         </td>
                                         <td className="px-5 py-3.5 whitespace-nowrap">
-                                            <CreditosMini creditos={alumno.creditos_acumulados} meta={alumno.creditos_requeridos} />
+                                            <CreditosMini creditos={alumno.creditos_acumulados} meta={alumno.meta} />
                                         </td>
                                         <td className="px-5 py-3.5">
                                             <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${ESTATUS_STYLE[alumno.estatus] ?? 'bg-gray-100 text-gray-500'}`}>
