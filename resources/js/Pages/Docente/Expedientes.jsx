@@ -1,50 +1,20 @@
+import { useState, useMemo } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import TipoBadge from '@/Components/TipoBadge';
 import { Head } from '@inertiajs/react';
 import { SearchIcon } from '@/Components/Icons';
 
-const EXPEDIENTES = [
-    {
-        matricula: '210001', nombre: 'Ana García López',       carrera: 'ISC', semestre: 6,
-        actividad: 'Taller de Danza Folklórica', tipo: 'cultural',
-        asistencia: 92, creditos: 1, estatus: 'acreditado',
-        sesiones: { total: 24, cursadas: 22 },
-    },
-    {
-        matricula: '210045', nombre: 'Luis Pérez Ramírez',     carrera: 'IGE', semestre: 4,
-        actividad: 'Taller de Danza Folklórica', tipo: 'cultural',
-        asistencia: 85, creditos: 1, estatus: 'en-curso',
-        sesiones: { total: 24, cursadas: 20 },
-    },
-    {
-        matricula: '210078', nombre: 'María Torres Vega',      carrera: 'ISC', semestre: 8,
-        actividad: 'Taller de Teatro Clásico', tipo: 'cultural',
-        asistencia: 78, creditos: 2, estatus: 'en-curso',
-        sesiones: { total: 16, cursadas: 12 },
-    },
-    {
-        matricula: '210103', nombre: 'Carlos Mendoza Ríos',    carrera: 'IDS', semestre: 2,
-        actividad: 'Taller de Danza Folklórica', tipo: 'cultural',
-        asistencia: 55, creditos: 1, estatus: 'pendiente',
-        sesiones: { total: 24, cursadas: 13 },
-    },
-    {
-        matricula: '210134', nombre: 'Sofía Ramos Castro',     carrera: 'ISC', semestre: 6,
-        actividad: 'Taller de Teatro Clásico', tipo: 'cultural',
-        asistencia: 90, creditos: 2, estatus: 'en-curso',
-        sesiones: { total: 16, cursadas: 14 },
-    },
-];
-
 const ESTATUS_STYLE = {
     'acreditado': 'bg-green-100 text-green-700',
-    'en-curso':   'bg-amber-100 text-amber-700',
-    'pendiente':  'bg-red-100 text-red-600',
+    'en_curso':   'bg-amber-100 text-amber-700',
+    'inscrito':   'bg-blue-100 text-blue-700',
+    'reprobado':  'bg-red-100 text-red-600',
 };
 const ESTATUS_LABEL = {
     'acreditado': 'Acreditado',
-    'en-curso':   'En Curso',
-    'pendiente':  'En Riesgo',
+    'en_curso':   'En Curso',
+    'inscrito':   'Inscrito',
+    'reprobado':  'Reprobado',
 };
 
 function AsistenciaBar({ pct }) {
@@ -60,7 +30,22 @@ function AsistenciaBar({ pct }) {
     );
 }
 
-export default function Expedientes() {
+export default function Expedientes({ expedientes, actividades }) {
+    const [search, setSearch] = useState('');
+    const [filtroActividad, setFiltroActividad] = useState('');
+    const [filtroEstatus, setFiltroEstatus] = useState('');
+
+    const expedientesFiltrados = useMemo(() => {
+        return expedientes.filter((exp) => {
+            const matchSearch = !search ||
+                exp.nombre.toLowerCase().includes(search.toLowerCase()) ||
+                exp.matricula.includes(search);
+            const matchActividad = !filtroActividad || exp.nombre_actividad === filtroActividad;
+            const matchEstatus = !filtroEstatus || ESTATUS_LABEL[exp.estatus] === filtroEstatus;
+            return matchSearch && matchActividad && matchEstatus;
+        });
+    }, [expedientes, search, filtroActividad, filtroEstatus]);
+
     return (
         <AuthenticatedLayout header="Expedientes">
             <Head title="Expedientes de Alumnos" />
@@ -74,13 +59,13 @@ export default function Expedientes() {
                 </div>
 
                 {/* Alerta alumnos en riesgo */}
-                {EXPEDIENTES.some((e) => e.estatus === 'pendiente') && (
+                {expedientes.some((e) => e.porcentaje_asistencia < 60 && e.estatus === 'en_curso') && (
                     <div className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4">
                         <span className="mt-0.5 text-red-500">⚠️</span>
                         <div>
                             <p className="text-sm font-semibold text-red-700">Alumnos en riesgo de no acreditar</p>
                             <p className="mt-0.5 text-xs text-red-500">
-                                {EXPEDIENTES.filter((e) => e.estatus === 'pendiente').length} alumno(s) tienen asistencia por debajo del 60% mínimo requerido.
+                                {expedientes.filter((e) => e.porcentaje_asistencia < 60 && e.estatus === 'en_curso').length} alumno(s) tienen asistencia por debajo del 60% mínimo requerido.
                             </p>
                         </div>
                     </div>
@@ -95,20 +80,30 @@ export default function Expedientes() {
                             </span>
                             <input
                                 type="search"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
                                 placeholder="Buscar alumno o matrícula..."
                                 className="w-full rounded-lg border border-cream-400 bg-white py-1.5 pl-9 pr-3 text-sm placeholder-gray-400 focus:border-guinda focus:outline-none focus:ring-1 focus:ring-guinda/30"
                             />
                         </div>
-                        <select className="rounded-lg border border-cream-400 bg-white px-3 py-1.5 text-sm text-gray-600 focus:border-guinda focus:outline-none">
-                            <option>Todas las actividades</option>
-                            <option>Taller de Danza Folklórica</option>
-                            <option>Taller de Teatro Clásico</option>
+                        <select
+                            value={filtroActividad}
+                            onChange={(e) => setFiltroActividad(e.target.value)}
+                            className="rounded-lg border border-cream-400 bg-white px-3 py-1.5 text-sm text-gray-600 focus:border-guinda focus:outline-none"
+                        >
+                            <option value="">Todas las actividades</option>
+                            {actividades.map((act) => <option key={act}>{act}</option>)}
                         </select>
-                        <select className="rounded-lg border border-cream-400 bg-white px-3 py-1.5 text-sm text-gray-600 focus:border-guinda focus:outline-none">
-                            <option>Todos los estatus</option>
+                        <select
+                            value={filtroEstatus}
+                            onChange={(e) => setFiltroEstatus(e.target.value)}
+                            className="rounded-lg border border-cream-400 bg-white px-3 py-1.5 text-sm text-gray-600 focus:border-guinda focus:outline-none"
+                        >
+                            <option value="">Todos los estatus</option>
                             <option>Acreditado</option>
                             <option>En Curso</option>
-                            <option>En Riesgo</option>
+                            <option>Inscrito</option>
+                            <option>Reprobado</option>
                         </select>
                     </div>
 
@@ -124,8 +119,8 @@ export default function Expedientes() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-cream-300">
-                                {EXPEDIENTES.map((exp) => (
-                                    <tr key={exp.matricula + exp.actividad} className="hover:bg-cream-50 transition-colors">
+                                {expedientesFiltrados.map((exp) => (
+                                    <tr key={exp.matricula + exp.nombre_actividad} className="hover:bg-cream-50 transition-colors">
                                         <td className="px-5 py-3.5 font-mono text-xs font-semibold text-gray-500">{exp.matricula}</td>
                                         <td className="px-5 py-3.5 whitespace-nowrap">
                                             <div className="flex items-center gap-2.5">
@@ -139,15 +134,15 @@ export default function Expedientes() {
                                             </div>
                                         </td>
                                         <td className="px-5 py-3.5 whitespace-nowrap">
-                                            <p className="text-xs font-medium text-gray-700">{exp.actividad}</p>
+                                            <p className="text-xs font-medium text-gray-700">{exp.nombre_actividad}</p>
                                             <TipoBadge tipo={exp.tipo} />
                                         </td>
                                         <td className="px-5 py-3.5 text-center">
                                             <span className="tabular-nums text-xs font-medium text-gray-600">
-                                                {exp.sesiones.cursadas}/{exp.sesiones.total}
+                                                {exp.sesiones_cursadas}/{exp.sesiones_total}
                                             </span>
                                         </td>
-                                        <td className="px-5 py-3.5"><AsistenciaBar pct={exp.asistencia} /></td>
+                                        <td className="px-5 py-3.5"><AsistenciaBar pct={exp.porcentaje_asistencia} /></td>
                                         <td className="px-5 py-3.5">
                                             <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${ESTATUS_STYLE[exp.estatus]}`}>
                                                 {ESTATUS_LABEL[exp.estatus]}
@@ -163,7 +158,7 @@ export default function Expedientes() {
                     </div>
 
                     <div className="flex items-center justify-between border-t border-cream-400 px-5 py-3">
-                        <p className="text-xs text-gray-400">Mostrando {EXPEDIENTES.length} registros</p>
+                        <p className="text-xs text-gray-400">Mostrando {expedientesFiltrados.length} registros</p>
                         <button className="rounded-lg border border-cream-400 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-cream-100 transition-colors">
                             Exportar lista
                         </button>
