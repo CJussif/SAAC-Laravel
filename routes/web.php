@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminActividadController;
 use App\Http\Controllers\AlumnoEvidenciaController;
 use App\Http\Controllers\AdminEvidenciaController;
 use App\Http\Controllers\AdminSolicitudController;
+use App\Http\Controllers\DocenteExpedientesController;
 use App\Http\Controllers\DocenteGruposController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -46,7 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/asistencia', [AsistenciaController::class, 'store'])->name('asistencia.store');
     Route::post('/asistencia/acreditar', [AsistenciaController::class, 'acreditar'])->name('asistencia.acreditar');
     Route::get('/grupos', [DocenteGruposController::class, 'index'])->name('grupos.index');
-    Route::get('/expedientes',  fn () => Inertia::render('Docente/Expedientes'))->name('expedientes.index');
+    Route::get('/expedientes', [DocenteExpedientesController::class, 'index'])->name('expedientes.index');
 
     // Admin
     Route::get('/admin/catalogo', [AdminActividadController::class, 'index'])->name('admin.catalogo');
