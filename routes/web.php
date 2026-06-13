@@ -10,6 +10,7 @@ use App\Http\Controllers\AdminEvidenciaController;
 use App\Http\Controllers\AdminSolicitudController;
 use App\Http\Controllers\DocenteExpedientesController;
 use App\Http\Controllers\DocenteGruposController;
+use App\Http\Controllers\AdminAlumnosController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -61,7 +62,8 @@ Route::middleware('auth')->group(function () {
     // Panel de revisión de solicitudes (evidencias externas)
     Route::get('/admin/solicitudes', [AdminSolicitudController::class, 'index'])->name('admin.solicitudes.index');
     Route::put('/admin/solicitudes/{id}', [AdminSolicitudController::class, 'update'])->name('admin.solicitudes.update');
-    Route::get('/admin/alumnos',     fn () => Inertia::render('Admin/Alumnos'))->name('admin.alumnos');
+    Route::get('/admin/alumnos', [AdminAlumnosController::class, 'index'])->name('admin.alumnos');
+    Route::patch('/admin/alumnos/{alumno}', [AdminAlumnosController::class, 'updateCreditos'])->name('admin.alumnos.update');
     Route::get('/admin/constancias', fn () => Inertia::render('Admin/Constancias'))->name('admin.constancias');
 });
 
