@@ -124,7 +124,7 @@ class InvitacionController extends Controller
             $user = User::create([
                 'name'     => "{$validated['nombre']} {$validated['apellido_paterno']}",
                 'email'    => $invitacion->email,
-                'password' => bcrypt($validated['password']),
+                'password' => $validated['password'],
                 'rol'      => 'alumno',
             ]);
 
