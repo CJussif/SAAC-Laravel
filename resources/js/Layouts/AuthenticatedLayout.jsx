@@ -35,6 +35,7 @@ const NAV = {
         { label: 'Gestión de Alumnos',   routeName: 'admin.alumnos',       icon: UsersIcon },
         { label: 'Validar Evidencias',   routeName: 'admin.solicitudes.index',    icon: CheckCircleIcon },
         { label: 'Constancias',          routeName: 'admin.constancias',   icon: DocumentIcon },
+        { label: 'Invitaciones',         routeName: 'admin.invitaciones',  icon: ClipboardIcon },
     ],
 };
 
