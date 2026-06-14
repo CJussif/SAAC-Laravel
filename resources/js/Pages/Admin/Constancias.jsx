@@ -135,21 +135,8 @@ export default function Constancias({ constancias, kpis, filters }) {
                         </table>
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-cream-400 px-5 py-3">
+                    <div className="border-t border-cream-400 px-5 py-3">
                         <p className="text-xs text-gray-400">Mostrando {constancias.length} constancias</p>
-                        <div className="flex gap-1">
-                            {[1, 2, 3].map((n) => (
-                                <button
-                                    key={n}
-                                    className={[
-                                        'h-7 min-w-[28px] rounded-md px-2 text-xs font-medium transition-colors',
-                                        n === 1 ? 'bg-guinda text-white' : 'text-gray-500 hover:bg-cream-200',
-                                    ].join(' ')}
-                                >
-                                    {n}
-                                </button>
-                            ))}
-                        </div>
                     </div>
                 </div>
             </div>
