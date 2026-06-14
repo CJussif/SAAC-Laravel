@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Actividad;
+use App\Traits\ResuelveActividad;
 use App\Models\Inscripcion;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class DocenteExpedientesController extends Controller
 {
+    use ResuelveActividad;
     public function index(Request $request)
     {
         $user = $request->user();
@@ -59,13 +61,5 @@ class DocenteExpedientesController extends Controller
             'expedientes' => $expedientes,
             'actividades' => $actividades->pluck('nombre')->values()->toArray(),
         ]);
-    }
-
-    private function resolverTipo(string $nombre): string
-    {
-        $lower = mb_strtolower($nombre, 'UTF-8');
-        return (str_contains($lower, 'yoga') || str_contains($lower, 'basquet') || str_contains($lower, 'deport'))
-            ? 'deportiva'
-            : 'cultural';
     }
 }

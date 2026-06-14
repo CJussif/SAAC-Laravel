@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Inscripcion;
+use App\Traits\ResuelveActividad;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class AdminConstanciasController extends Controller
 {
+    use ResuelveActividad;
     public function index(Request $request)
     {
         $user = $request->user();
@@ -54,13 +56,5 @@ class AdminConstanciasController extends Controller
             'kpis'        => $kpis,
             'filters'     => $request->only(['search', 'tipo']),
         ]);
-    }
-
-    private function resolverTipo(string $nombre): string
-    {
-        $lower = mb_strtolower($nombre, 'UTF-8');
-        return (str_contains($lower, 'yoga') || str_contains($lower, 'basquet') || str_contains($lower, 'deport'))
-            ? 'deportiva'
-            : 'cultural';
     }
 }
