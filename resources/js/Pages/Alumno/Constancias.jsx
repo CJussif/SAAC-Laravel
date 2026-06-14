@@ -40,9 +40,20 @@ function ConstanciaCard({ c }) {
                     </div>
                 </div>
 
-                <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-guinda py-2.5 text-sm font-semibold text-white transition-all hover:bg-guinda-700 active:scale-[0.98]">
-                    ⬇ Descargar Constancia
-                </button>
+                {c.ruta_constancia ? (
+                    <a
+                        href={`/storage/${c.ruta_constancia}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex w-full items-center justify-center gap-2 rounded-lg bg-guinda py-2.5 text-sm font-semibold text-white transition-all hover:bg-guinda-700 active:scale-[0.98]"
+                    >
+                        ⬇ Descargar Constancia
+                    </a>
+                ) : (
+                    <span className="flex w-full items-center justify-center gap-2 rounded-lg bg-cream-300 py-2.5 text-sm font-semibold text-gray-400 cursor-not-allowed">
+                        Constancia no disponible
+                    </span>
+                )}
             </div>
         </div>
     );

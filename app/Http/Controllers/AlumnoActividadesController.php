@@ -242,12 +242,13 @@ class AlumnoActividadesController extends Controller
             $completado = Carbon::parse($inscripcion->updated_at)->translatedFormat('d M Y');
 
             return [
-                'id' => $inscripcion->id,
-                'folio' => $folio,
-                'nombre' => $actividad->nombre,
-                'completado' => $completado,
-                'creditos' => $actividad->creditos,
-                'tipo' => $tipo,
+                'id'              => $inscripcion->id,
+                'folio'           => $folio,
+                'nombre'          => $actividad->nombre,
+                'completado'      => $completado,
+                'creditos'        => $actividad->creditos,
+                'tipo'            => $tipo,
+                'ruta_constancia' => $inscripcion->ruta_constancia,
             ];
         })->toArray();
 

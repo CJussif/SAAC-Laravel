@@ -43,6 +43,7 @@ class AdminConstanciasController extends Controller
             'tipo'            => $this->resolverTipo($ins->actividad->nombre),
             'creditos'        => $ins->actividad->creditos,
             'fecha'           => $ins->updated_at->format('Y-m-d'),
+            'estatus'         => 'emitida',
             'ruta_constancia' => $ins->ruta_constancia,
         ])->values()->toArray();
 
