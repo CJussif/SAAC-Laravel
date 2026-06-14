@@ -12,6 +12,7 @@ use App\Http\Controllers\DocenteExpedientesController;
 use App\Http\Controllers\DocenteGruposController;
 use App\Http\Controllers\AdminAlumnosController;
 use App\Http\Controllers\AdminConstanciasController;
+use App\Http\Controllers\InvitacionController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -66,6 +67,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/alumnos', [AdminAlumnosController::class, 'index'])->name('admin.alumnos');
     Route::patch('/admin/alumnos/{alumno}', [AdminAlumnosController::class, 'updateCreditos'])->name('admin.alumnos.update');
     Route::get('/admin/constancias', [AdminConstanciasController::class, 'index'])->name('admin.constancias');
+
+    // Invitaciones
+    Route::get('/admin/invitaciones', [InvitacionController::class, 'index'])->name('admin.invitaciones');
+    Route::post('/admin/invitaciones', [InvitacionController::class, 'store']);
+    Route::delete('/admin/invitaciones/{invitacion}', [InvitacionController::class, 'destroy'])->name('admin.invitaciones.destroy');
 });
+
+// Activación pública (sin autenticación requerida)
+Route::get('/activar/{token}', [InvitacionController::class, 'show'])->name('invitacion.activar');
+Route::post('/activar/{token}', [InvitacionController::class, 'activar'])->name('invitacion.procesar');
 
 require __DIR__.'/auth.php';
