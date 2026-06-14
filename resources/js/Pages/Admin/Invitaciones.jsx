@@ -7,9 +7,12 @@ export default function Invitaciones({ invitaciones, invitacion_url }) {
     const { data, setData, post, processing, errors, reset } = useForm({ email: '' });
 
     const copiarUrl = () => {
-        navigator.clipboard.writeText(invitacion_url);
-        setCopiado(true);
-        setTimeout(() => setCopiado(false), 2000);
+        navigator.clipboard.writeText(invitacion_url)
+            .then(() => {
+                setCopiado(true);
+                setTimeout(() => setCopiado(false), 2000);
+            })
+            .catch(() => {});
     };
 
     const enviar = (e) => {
