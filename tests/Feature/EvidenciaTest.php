@@ -45,7 +45,7 @@ class EvidenciaTest extends TestCase
      */
     public function test_student_can_upload_evidence_successfully(): void
     {
-        Storage::fake('public');
+        Storage::fake('local');
 
         $file = UploadedFile::fake()->create('constancia.pdf', 2048, 'application/pdf');
 
@@ -62,7 +62,7 @@ class EvidenciaTest extends TestCase
             ]);
 
         $response->assertRedirect();
-        $response->assertSessionHas('success', 'Tu solicitud ha sido enviada y está en revisión.');
+        $response->assertSessionHas('success', '¡Solicitud enviada! Tu evidencia está en revisión por el área SAAC.');
 
         $solicitud = Solicitud::first();
         $this->assertNotNull($solicitud);
@@ -71,7 +71,7 @@ class EvidenciaTest extends TestCase
         $this->assertEquals('deportiva', $solicitud->tipo_actividad);
         $this->assertEquals('pendiente', $solicitud->estatus);
 
-        Storage::disk('public')->assertExists($solicitud->ruta_archivo);
+        Storage::disk('local')->assertExists($solicitud->ruta_archivo);
     }
 
     /**
