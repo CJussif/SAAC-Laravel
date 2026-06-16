@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/actividades', [AlumnoActividadesController::class, 'index'])->name('actividades.index');
     Route::post('/inscripciones', [InscripcionController::class, 'store'])->name('inscripciones.store');
     Route::get('/constancias', [AlumnoActividadesController::class, 'constancias'])->name('constancias.index');
+    Route::get('/constancias/{id}/descargar', [AlumnoActividadesController::class, 'descargarConstancia'])->name('constancias.descargar');
     Route::get('/historial', [AlumnoActividadesController::class, 'historial'])->name('historial.index');
     Route::get('/subir-evidencia', [AlumnoEvidenciaController::class, 'create'])->name('evidencias.create');
     Route::post('/subir-evidencia', [AlumnoEvidenciaController::class, 'store'])->name('evidencias.store');

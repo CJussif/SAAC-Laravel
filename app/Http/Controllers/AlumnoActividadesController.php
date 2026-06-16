@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Actividad;
 use App\Models\Inscripcion;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Carbon\Carbon;
@@ -255,5 +256,45 @@ class AlumnoActividadesController extends Controller
         return Inertia::render('Alumno/Constancias', [
             'constancias' => $constancias,
         ]);
+    }
+
+    public function descargarConstancia(Request $request, int $id)
+    {
+        $user = $request->user();
+        if (!$user || $user->rol !== 'alumno' || !$user->alumno) {
+            return redirect()->route('dashboard');
+        }
+
+        $inscripcion = Inscripcion::with(['actividad.docente', 'alumno'])
+            ->where('id', $id)
+            ->where('alumno_id', $user->alumno->id)
+            ->where('estatus', 'acreditado')
+            ->firstOrFail();
+
+        $actividad = $inscripcion->actividad;
+        $alumno    = $inscripcion->alumno;
+        $docente   = $actividad->docente;
+
+        $folio = 'CON-' . $inscripcion->updated_at->year . '-' . str_pad($inscripcion->id, 4, '0', STR_PAD_LEFT);
+
+        $docenteNombre = $docente
+            ? "{$docente->nombre} {$docente->apellido_paterno} {$docente->apellido_materno}"
+            : 'S/N';
+
+        $pdf = Pdf::loadView('constancia-pdf', [
+            'folio'              => $folio,
+            'fecha_emision'      => now()->translatedFormat('d \d\e F \d\e Y'),
+            'alumno_nombre'      => "{$alumno->nombre} {$alumno->apellido_paterno} {$alumno->apellido_materno}",
+            'matricula'          => $alumno->matricula,
+            'carrera'            => $alumno->carrera,
+            'semestre'           => $alumno->semestre,
+            'actividad_nombre'   => $actividad->nombre,
+            'tipo'               => $this->getTipoByNombre($actividad->nombre),
+            'creditos'           => $actividad->creditos,
+            'docente'            => $docenteNombre,
+            'fecha_acreditacion' => $inscripcion->updated_at->translatedFormat('d \d\e F \d\e Y'),
+        ])->setPaper('letter', 'portrait');
+
+        return $pdf->download("constancia-{$folio}.pdf");
     }
 }
