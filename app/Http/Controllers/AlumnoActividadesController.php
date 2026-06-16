@@ -281,9 +281,15 @@ class AlumnoActividadesController extends Controller
             ? "{$docente->nombre} {$docente->apellido_paterno} {$docente->apellido_materno}"
             : 'S/N';
 
+        $meses = [
+            1=>'enero',2=>'febrero',3=>'marzo',4=>'abril',5=>'mayo',6=>'junio',
+            7=>'julio',8=>'agosto',9=>'septiembre',10=>'octubre',11=>'noviembre',12=>'diciembre',
+        ];
+        $fmtFecha = fn (Carbon $d) => $d->day . ' de ' . $meses[$d->month] . ' de ' . $d->year;
+
         $pdf = Pdf::loadView('constancia-pdf', [
             'folio'              => $folio,
-            'fecha_emision'      => now()->translatedFormat('d \d\e F \d\e Y'),
+            'fecha_emision'      => $fmtFecha(now()),
             'alumno_nombre'      => "{$alumno->nombre} {$alumno->apellido_paterno} {$alumno->apellido_materno}",
             'matricula'          => $alumno->matricula,
             'carrera'            => $alumno->carrera,
@@ -292,7 +298,8 @@ class AlumnoActividadesController extends Controller
             'tipo'               => $this->getTipoByNombre($actividad->nombre),
             'creditos'           => $actividad->creditos,
             'docente'            => $docenteNombre,
-            'fecha_acreditacion' => $inscripcion->updated_at->translatedFormat('d \d\e F \d\e Y'),
+            'fecha_acreditacion' => $fmtFecha($inscripcion->updated_at),
+            'generado_en'        => now()->format('d/m/Y H:i') . ' hrs',
         ])->setPaper('letter', 'portrait');
 
         return $pdf->download("constancia-{$folio}.pdf");

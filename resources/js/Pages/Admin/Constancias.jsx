@@ -67,9 +67,12 @@ export default function Constancias({ constancias, kpis, filters }) {
                             <option>Emitida</option>
                             <option>Pendiente</option>
                         </select>
-                        <button className="rounded-lg border border-cream-400 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-cream-100 transition-colors">
+                        <a
+                            href={route('admin.constancias.exportar', { search, tipo })}
+                            className="rounded-lg border border-cream-400 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-cream-100 transition-colors"
+                        >
                             Exportar CSV
-                        </button>
+                        </a>
                     </div>
 
                     <div className="overflow-x-auto">

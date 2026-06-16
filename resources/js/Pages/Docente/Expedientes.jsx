@@ -159,9 +159,12 @@ export default function Expedientes({ expedientes, actividades }) {
 
                     <div className="flex items-center justify-between border-t border-cream-400 px-5 py-3">
                         <p className="text-xs text-gray-400">Mostrando {expedientesFiltrados.length} registros</p>
-                        <button className="rounded-lg border border-cream-400 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-cream-100 transition-colors">
+                        <a
+                            href={route('expedientes.exportar')}
+                            className="rounded-lg border border-cream-400 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-cream-100 transition-colors"
+                        >
                             Exportar lista
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>

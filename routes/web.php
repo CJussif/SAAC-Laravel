@@ -52,6 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/asistencia/acreditar', [AsistenciaController::class, 'acreditar'])->name('asistencia.acreditar');
     Route::get('/grupos', [DocenteGruposController::class, 'index'])->name('grupos.index');
     Route::get('/expedientes', [DocenteExpedientesController::class, 'index'])->name('expedientes.index');
+    Route::get('/expedientes/exportar', [DocenteExpedientesController::class, 'exportarCsv'])->name('expedientes.exportar');
 
     // Admin
     Route::get('/admin/catalogo', [AdminActividadController::class, 'index'])->name('admin.catalogo');
@@ -68,6 +69,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/alumnos', [AdminAlumnosController::class, 'index'])->name('admin.alumnos');
     Route::patch('/admin/alumnos/{alumno}', [AdminAlumnosController::class, 'updateCreditos'])->name('admin.alumnos.update');
     Route::get('/admin/constancias', [AdminConstanciasController::class, 'index'])->name('admin.constancias');
+    Route::get('/admin/constancias/exportar', [AdminConstanciasController::class, 'exportarCsv'])->name('admin.constancias.exportar');
 
     // Invitaciones
     Route::get('/admin/invitaciones', [InvitacionController::class, 'index'])->name('admin.invitaciones');
