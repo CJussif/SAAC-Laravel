@@ -145,16 +145,30 @@
         .creditos-num   { font-size: 24pt; font-weight: bold; line-height: 1; }
         .creditos-label { font-size: 8pt; margin-top: 3px; opacity: 0.85; }
 
-        /* ── VALIDEZ ── */
-        .validity {
+        /* ── VALIDEZ + QR ── */
+        .validity-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 18px;
             background: #f0fdf4;
             border: 1px solid #bbf7d0;
             border-radius: 4px;
-            padding: 7px 12px;
+        }
+        .validity-text-cell {
+            padding: 10px 12px;
+            vertical-align: middle;
             font-size: 8.5pt;
             color: #166534;
-            margin-bottom: 18px;
         }
+        .validity-qr-cell {
+            width: 100px;
+            text-align: center;
+            padding: 6px 8px;
+            vertical-align: middle;
+            border-left: 1px solid #bbf7d0;
+        }
+        .validity-qr-cell img { display: block; margin: 0 auto; }
+        .qr-label { font-size: 6.5pt; color: #6b7280; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.6px; }
 
         /* ── FIRMAS ── */
         .sig-table {
@@ -286,10 +300,20 @@
         <div class="creditos-label">{{ $creditos == 1 ? 'Crédito complementario obtenido' : 'Créditos complementarios obtenidos' }}</div>
     </div>
 
-    <!-- VALIDEZ -->
-    <div class="validity">
-        ✓ Este documento cuenta con validez digital. El folio <b>{{ $folio }}</b> puede ser verificado ante el Departamento S.A.A.C. del plantel.
-    </div>
+    <!-- VALIDEZ + QR -->
+    <table class="validity-table">
+        <tr>
+            <td class="validity-text-cell">
+                ✓ Este documento cuenta con validez digital. El folio <b>{{ $folio }}</b>
+                puede ser verificado ante el Departamento S.A.A.C. del plantel.<br><br>
+                Escanea el código QR para verificar la autenticidad de esta constancia.
+            </td>
+            <td class="validity-qr-cell">
+                <img src="{{ $qr_base64 }}" width="80" height="80" alt="QR de verificación">
+                <div class="qr-label">Verificación</div>
+            </td>
+        </tr>
+    </table>
 
     <!-- FIRMAS -->
     <table class="sig-table">

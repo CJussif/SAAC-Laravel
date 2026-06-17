@@ -8,6 +8,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Carbon\Carbon;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class AlumnoActividadesController extends Controller
 {
@@ -287,6 +288,10 @@ class AlumnoActividadesController extends Controller
         ];
         $fmtFecha = fn (Carbon $d) => $d->day . ' de ' . $meses[$d->month] . ' de ' . $d->year;
 
+        $qrData = "SAAC-TESCHa\nFolio: {$folio}\nAlumno: {$alumno->nombre} {$alumno->apellido_paterno} {$alumno->apellido_materno}\nMatrícula: {$alumno->matricula}\nActividad: {$actividad->nombre}";
+        $qrPng    = QrCode::format('png')->size(120)->margin(1)->generate($qrData);
+        $qrBase64 = 'data:image/png;base64,' . base64_encode($qrPng);
+
         $pdf = Pdf::loadView('constancia-pdf', [
             'folio'              => $folio,
             'fecha_emision'      => $fmtFecha(now()),
@@ -300,6 +305,7 @@ class AlumnoActividadesController extends Controller
             'docente'            => $docenteNombre,
             'fecha_acreditacion' => $fmtFecha($inscripcion->updated_at),
             'generado_en'        => now()->format('d/m/Y H:i') . ' hrs',
+            'qr_base64'          => $qrBase64,
         ])->setPaper('letter', 'portrait');
 
         return $pdf->download("constancia-{$folio}.pdf");
