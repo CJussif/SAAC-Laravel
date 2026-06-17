@@ -79,83 +79,66 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // ──────────────────────────────────────────
-        // 3. ALUMNOS
+        // 3. ALUMNOS (15)
         // ──────────────────────────────────────────
+        $alumnosData = [
+            // email, name, nombre, ap, am, matricula, carrera, semestre, creditos
+            ['alumno@tescha.edu.mx',           'Ana García López',           'Ana',        'García',    'López',      '20240001', 'ISC', 4, 1],
+            ['luis.ramirez@tescha.edu.mx',     'Luis Ramírez Vega',          'Luis',       'Ramírez',   'Vega',       '20220087', 'IGE', 6, 4],
+            ['maria.torres@tescha.edu.mx',     'María Torres Hernández',     'María',      'Torres',    'Hernández',  '20231045', 'IDS', 2, 0],
+            ['carlos.vega@tescha.edu.mx',      'Carlos Vega Morales',        'Carlos',     'Vega',      'Morales',    '20200312', 'ISC', 8, 4],
+            ['sofia.luna@tescha.edu.mx',       'Sofía Luna Pérez',           'Sofía',      'Luna',      'Pérez',      '20241102', 'ISC', 2, 0],
+            ['diego.reyes@tescha.edu.mx',      'Diego Reyes Castillo',       'Diego',      'Reyes',     'Castillo',   '20230456', 'IGE', 4, 2],
+            ['valeria.ibarra@tescha.edu.mx',   'Valeria Ibarra Noriega',     'Valeria',    'Ibarra',    'Noriega',    '20220198', 'IDS', 6, 3],
+            ['jorge.mendoza@tescha.edu.mx',    'Jorge Mendoza Ruiz',         'Jorge',      'Mendoza',   'Ruiz',       '20211234', 'ISC', 8, 5],
+            ['daniela.soto@tescha.edu.mx',     'Daniela Soto Vargas',        'Daniela',    'Soto',      'Vargas',     '20240789', 'IGE', 2, 0],
+            ['miguel.flores@tescha.edu.mx',    'Miguel Flores Aranda',       'Miguel',     'Flores',    'Aranda',     '20230321', 'ISC', 4, 1],
+            ['paola.guerrero@tescha.edu.mx',   'Paola Guerrero Estrada',     'Paola',      'Guerrero',  'Estrada',    '20221567', 'IDS', 5, 2],
+            ['ivan.corona@tescha.edu.mx',      'Iván Corona Delgado',        'Iván',       'Corona',    'Delgado',    '20200876', 'ISC', 9, 6],
+            ['adriana.leon@tescha.edu.mx',     'Adriana León Moreno',        'Adriana',    'León',      'Moreno',     '20241890', 'IGE', 1, 0],
+            ['roberto.silva@tescha.edu.mx',    'Roberto Silva Gutiérrez',    'Roberto',    'Silva',     'Gutiérrez',  '20231678', 'IDS', 3, 1],
+            ['fernanda.ochoa@tescha.edu.mx',   'Fernanda Ochoa Martínez',    'Fernanda',   'Ochoa',     'Martínez',   '20220943', 'ISC', 7, 3],
+        ];
 
-        // Alumno 1: Ana García — tiene 1 constancia descargable + 1 actividad en curso
-        $anaUser = User::create([
-            'name'     => 'Ana García López',
-            'email'    => 'alumno@tescha.edu.mx',
-            'password' => Hash::make('saac1234'),
-            'rol'      => 'alumno',
-        ]);
-        $ana = Alumno::create([
-            'user_id'              => $anaUser->id,
-            'matricula'            => '20240001',
-            'nombre'               => 'Ana',
-            'apellido_paterno'     => 'García',
-            'apellido_materno'     => 'López',
-            'carrera'              => 'ISC',
-            'semestre'             => 4,
-            'creditos_acumulados'  => 1,
-        ]);
+        $alumnos = [];
+        foreach ($alumnosData as [$email, $name, $nom, $ap, $am, $mat, $car, $sem, $cred]) {
+            $user = User::create([
+                'name'     => $name,
+                'email'    => $email,
+                'password' => Hash::make('saac1234'),
+                'rol'      => 'alumno',
+            ]);
+            $alumnos[$email] = Alumno::create([
+                'user_id'             => $user->id,
+                'matricula'           => $mat,
+                'nombre'              => $nom,
+                'apellido_paterno'    => $ap,
+                'apellido_materno'    => $am,
+                'carrera'             => $car,
+                'semestre'            => $sem,
+                'creditos_acumulados' => $cred,
+            ]);
+        }
 
-        // Alumno 2: Luis Ramírez — 2 actividades acreditadas, evidencia aprobada, notificación
-        $luisUser = User::create([
-            'name'     => 'Luis Ramírez Vega',
-            'email'    => 'luis.ramirez@tescha.edu.mx',
-            'password' => Hash::make('saac1234'),
-            'rol'      => 'alumno',
-        ]);
-        $luis = Alumno::create([
-            'user_id'              => $luisUser->id,
-            'matricula'            => '20220087',
-            'nombre'               => 'Luis',
-            'apellido_paterno'     => 'Ramírez',
-            'apellido_materno'     => 'Vega',
-            'carrera'              => 'IGE',
-            'semestre'             => 6,
-            'creditos_acumulados'  => 4,
-        ]);
-
-        // Alumno 3: María Torres — asistencia baja (activa alerta de riesgo en panel docente)
-        $mariaUser = User::create([
-            'name'     => 'María Torres Hernández',
-            'email'    => 'maria.torres@tescha.edu.mx',
-            'password' => Hash::make('saac1234'),
-            'rol'      => 'alumno',
-        ]);
-        $maria = Alumno::create([
-            'user_id'              => $mariaUser->id,
-            'matricula'            => '20231045',
-            'nombre'               => 'María',
-            'apellido_paterno'     => 'Torres',
-            'apellido_materno'     => 'Hernández',
-            'carrera'              => 'IDS',
-            'semestre'             => 2,
-            'creditos_acumulados'  => 0,
-        ]);
-
-        // Alumno 4: Carlos Vega — alumno avanzado, 4 créditos, evidencia rechazada + notificación
-        $carlosUser = User::create([
-            'name'     => 'Carlos Vega Morales',
-            'email'    => 'carlos.vega@tescha.edu.mx',
-            'password' => Hash::make('saac1234'),
-            'rol'      => 'alumno',
-        ]);
-        $carlos = Alumno::create([
-            'user_id'              => $carlosUser->id,
-            'matricula'            => '20200312',
-            'nombre'               => 'Carlos',
-            'apellido_paterno'     => 'Vega',
-            'apellido_materno'     => 'Morales',
-            'carrera'              => 'ISC',
-            'semestre'             => 8,
-            'creditos_acumulados'  => 4,
-        ]);
+        // Alias cortos para los alumnos usados en inscripciones
+        $ana      = $alumnos['alumno@tescha.edu.mx'];
+        $luis     = $alumnos['luis.ramirez@tescha.edu.mx'];
+        $maria    = $alumnos['maria.torres@tescha.edu.mx'];
+        $carlos   = $alumnos['carlos.vega@tescha.edu.mx'];
+        $sofia    = $alumnos['sofia.luna@tescha.edu.mx'];
+        $diego    = $alumnos['diego.reyes@tescha.edu.mx'];
+        $valeria  = $alumnos['valeria.ibarra@tescha.edu.mx'];
+        $jorge    = $alumnos['jorge.mendoza@tescha.edu.mx'];
+        $daniela  = $alumnos['daniela.soto@tescha.edu.mx'];
+        $miguel   = $alumnos['miguel.flores@tescha.edu.mx'];
+        $paola    = $alumnos['paola.guerrero@tescha.edu.mx'];
+        $ivan     = $alumnos['ivan.corona@tescha.edu.mx'];
+        $adriana  = $alumnos['adriana.leon@tescha.edu.mx'];
+        $roberto  = $alumnos['roberto.silva@tescha.edu.mx'];
+        $fernanda = $alumnos['fernanda.ochoa@tescha.edu.mx'];
 
         // ──────────────────────────────────────────
-        // 4. ACTIVIDADES
+        // 4. ACTIVIDADES (16 en total)
         // ──────────────────────────────────────────
         $yoga = Actividad::create([
             'docente_id'   => $docenteRojas->id,
@@ -180,7 +163,7 @@ class DatabaseSeeder extends Seeder
         $programacion = Actividad::create([
             'docente_id'   => $docenteMendez->id,
             'nombre'       => 'Programación Competitiva Avanzada',
-            'descripcion'  => 'Resolución de problemas algorítmicos complejos para olimpiadas de programación.',
+            'descripcion'  => 'Resolución de problemas algorítmicos para olimpiadas y competencias nacionales.',
             'creditos'     => 2,
             'cupo_maximo'  => 20,
             'horario'      => 'Vie · 10:00 – 14:00',
@@ -220,7 +203,7 @@ class DatabaseSeeder extends Seeder
         $ajedrez = Actividad::create([
             'docente_id'   => $docenteMendez->id,
             'nombre'       => 'Taller de Ajedrez Básico',
-            'descripcion'  => 'Fundamentos del ajedrez y estrategias para principiantes.',
+            'descripcion'  => 'Fundamentos del ajedrez y estrategias tácticas para principiantes.',
             'creditos'     => 1,
             'cupo_maximo'  => 30,
             'horario'      => 'Lun y Mié · 14:00 – 16:00',
@@ -237,107 +220,164 @@ class DatabaseSeeder extends Seeder
             'tipo_periodo' => 'semestral',
         ]);
 
+        // ── Nuevas 8 actividades ────────────────
+        $pintura = Actividad::create([
+            'docente_id'   => $docenteRojas->id,
+            'nombre'       => 'Taller de Pintura y Artes Plásticas',
+            'descripcion'  => 'Técnicas de pintura al óleo, acrílico y acuarela con enfoque en expresión artística.',
+            'creditos'     => 1,
+            'cupo_maximo'  => 25,
+            'horario'      => 'Mié · 15:00 – 18:00',
+            'tipo_periodo' => 'semestral',
+        ]);
+
+        $fotografia = Actividad::create([
+            'docente_id'   => $docenteFuentes->id,
+            'nombre'       => 'Club de Fotografía Digital',
+            'descripcion'  => 'Técnica fotográfica, composición y edición con software profesional.',
+            'creditos'     => 1,
+            'cupo_maximo'  => 20,
+            'horario'      => 'Sáb · 10:00 – 13:00',
+            'tipo_periodo' => 'semestral',
+        ]);
+
+        $guitarra = Actividad::create([
+            'docente_id'   => $docenteMendez->id,
+            'nombre'       => 'Taller de Guitarra Clásica',
+            'descripcion'  => 'Iniciación a la guitarra clásica y lectura de partituras básicas.',
+            'creditos'     => 1,
+            'cupo_maximo'  => 20,
+            'horario'      => 'Jue · 15:00 – 17:00',
+            'tipo_periodo' => 'semestral',
+        ]);
+
+        $atletismo = Actividad::create([
+            'docente_id'   => $docenteRojas->id,
+            'nombre'       => 'Atletismo y Acondicionamiento Físico',
+            'descripcion'  => 'Entrenamiento físico integral: velocidad, resistencia y fuerza.',
+            'creditos'     => 2,
+            'cupo_maximo'  => 40,
+            'horario'      => 'Lun, Mié y Vie · 07:00 – 08:30',
+            'tipo_periodo' => 'semestral',
+        ]);
+
+        $teatro = Actividad::create([
+            'docente_id'   => $docenteFuentes->id,
+            'nombre'       => 'Teatro y Expresión Corporal',
+            'descripcion'  => 'Técnicas teatrales, improvisación y montaje de obras breves.',
+            'creditos'     => 2,
+            'cupo_maximo'  => 30,
+            'horario'      => 'Mar y Jue · 17:00 – 19:00',
+            'tipo_periodo' => 'semestral',
+        ]);
+
+        $natacion = Actividad::create([
+            'docente_id'   => $docenteRojas->id,
+            'nombre'       => 'Taller de Natación',
+            'descripcion'  => 'Aprendizaje y perfeccionamiento de los cuatro estilos de natación.',
+            'creditos'     => 2,
+            'cupo_maximo'  => 20,
+            'horario'      => 'Lun y Mié · 07:00 – 09:00',
+            'tipo_periodo' => 'semestral',
+        ]);
+
+        $debate = Actividad::create([
+            'docente_id'   => $docenteMendez->id,
+            'nombre'       => 'Debate y Oratoria',
+            'descripcion'  => 'Técnicas de argumentación, debate estructurado y expresión oral en público.',
+            'creditos'     => 1,
+            'cupo_maximo'  => 30,
+            'horario'      => 'Mar · 16:00 – 18:00',
+            'tipo_periodo' => 'semestral',
+        ]);
+
+        $futbol = Actividad::create([
+            'docente_id'   => $docenteFuentes->id,
+            'nombre'       => 'Fútbol Varonil',
+            'descripcion'  => 'Entrenamiento técnico y táctico para la selección de fútbol del plantel.',
+            'creditos'     => 2,
+            'cupo_maximo'  => 22,
+            'horario'      => 'Mar y Jue · 15:00 – 17:00',
+            'tipo_periodo' => 'semestral',
+        ]);
+
         // ──────────────────────────────────────────
         // 5. INSCRIPCIONES + ASISTENCIAS
         // ──────────────────────────────────────────
 
-        // ── Ana García ──────────────────────────
-        // Ajedrez: ACREDITADO — constancia disponible para demo
-        $anaAjedrez = Inscripcion::create([
-            'alumno_id'        => $ana->id,
-            'actividad_id'     => $ajedrez->id,
-            'horas_acumuladas' => 32,
-            'estatus'          => 'acreditado',
-        ]);
-        $this->crearAsistencias($anaAjedrez->id, 16, 16, 16); // 16/16 sesiones
+        // ── Ana García (alumno demo principal) ──
+        $this->inscribir($ana->id, $ajedrez->id,   'acreditado', 32, 16, 16);
+        $this->inscribir($ana->id, $liderazgo->id, 'en_curso',   18, 12, 8);
 
-        // Liderazgo: EN CURSO — 67% asistencia (dentro del rango aceptable)
-        $anaLiderazgo = Inscripcion::create([
-            'alumno_id'        => $ana->id,
-            'actividad_id'     => $liderazgo->id,
-            'horas_acumuladas' => 18,
-            'estatus'          => 'en_curso',
-        ]);
-        $this->crearAsistencias($anaLiderazgo->id, 12, 8, 12); // 8/12 sesiones (67%)
+        // ── Luis Ramírez (2 acreditadas + evidencia aprobada) ──
+        $this->inscribir($luis->id, $yoga->id,     'acreditado', 30, 15, 15);
+        $this->inscribir($luis->id, $locucion->id, 'acreditado', 28, 14, 13);
+        $this->inscribir($luis->id, $robotica->id, 'en_curso',   20, 10, 8);
 
-        // ── Luis Ramírez ─────────────────────────
-        // Yoga: ACREDITADO
-        $luisYoga = Inscripcion::create([
-            'alumno_id'        => $luis->id,
-            'actividad_id'     => $yoga->id,
-            'horas_acumuladas' => 30,
-            'estatus'          => 'acreditado',
-        ]);
-        $this->crearAsistencias($luisYoga->id, 15, 15, 15);
+        // ── María Torres (asistencia baja — alerta de riesgo) ──
+        $this->inscribir($maria->id, $danza->id,    'en_curso', 8, 9, 4);  // 44%
+        $this->inscribir($maria->id, $pintura->id,  'inscrito', 0, 0, 0);
 
-        // Locución: ACREDITADO
-        $luisLocucion = Inscripcion::create([
-            'alumno_id'        => $luis->id,
-            'actividad_id'     => $locucion->id,
-            'horas_acumuladas' => 28,
-            'estatus'          => 'acreditado',
-        ]);
-        $this->crearAsistencias($luisLocucion->id, 14, 13, 14);
+        // ── Carlos Vega (2 acreditadas + evidencia rechazada) ──
+        $this->inscribir($carlos->id, $programacion->id, 'acreditado', 40, 20, 20);
+        $this->inscribir($carlos->id, $basquet->id,      'acreditado', 36, 18, 17);
+        $this->inscribir($carlos->id, $liderazgo->id,    'en_curso',   27, 10, 9);
 
-        // Robótica: EN CURSO — 83% asistencia
-        $luisRobotica = Inscripcion::create([
-            'alumno_id'        => $luis->id,
-            'actividad_id'     => $robotica->id,
-            'horas_acumuladas' => 20,
-            'estatus'          => 'en_curso',
-        ]);
-        $this->crearAsistencias($luisRobotica->id, 12, 10, 12);
+        // ── Sofía Luna (nueva, solo inscrita) ──
+        $this->inscribir($sofia->id, $danza->id,    'inscrito', 0, 0, 0);
+        $this->inscribir($sofia->id, $guitarra->id, 'inscrito', 0, 0, 0);
 
-        // ── María Torres ─────────────────────────
-        // Danza: EN CURSO — 44% asistencia (activa alerta de riesgo)
-        $mariaDanza = Inscripcion::create([
-            'alumno_id'        => $maria->id,
-            'actividad_id'     => $danza->id,
-            'horas_acumuladas' => 8,
-            'estatus'          => 'en_curso',
-        ]);
-        $this->crearAsistencias($mariaDanza->id, 9, 4, 9); // 4/9 = 44%
+        // ── Diego Reyes (1 acreditada, 1 en curso) ──
+        $this->inscribir($diego->id, $ajedrez->id,   'acreditado', 32, 16, 15);
+        $this->inscribir($diego->id, $atletismo->id, 'en_curso',   24, 12, 11); // 92%
 
-        // Yoga: INSCRITO (solo se apuntó, sin sesiones aún)
-        Inscripcion::create([
-            'alumno_id'    => $maria->id,
-            'actividad_id' => $yoga->id,
-            'estatus'      => 'inscrito',
-        ]);
+        // ── Valeria Ibarra (2 acreditadas) ──
+        $this->inscribir($valeria->id, $danza->id,    'acreditado', 30, 15, 14);
+        $this->inscribir($valeria->id, $fotografia->id,'acreditado', 24, 12, 12);
+        $this->inscribir($valeria->id, $teatro->id,   'en_curso',   14, 7,  6);
 
-        // ── Carlos Vega ──────────────────────────
-        // Programación: ACREDITADO
-        $carlosProg = Inscripcion::create([
-            'alumno_id'        => $carlos->id,
-            'actividad_id'     => $programacion->id,
-            'horas_acumuladas' => 40,
-            'estatus'          => 'acreditado',
-        ]);
-        $this->crearAsistencias($carlosProg->id, 20, 20, 20);
+        // ── Jorge Mendoza (alumno avanzado, 3 acreditadas) ──
+        $this->inscribir($jorge->id, $programacion->id, 'acreditado', 40, 20, 20);
+        $this->inscribir($jorge->id, $debate->id,       'acreditado', 28, 14, 13);
+        $this->inscribir($jorge->id, $robotica->id,     'acreditado', 40, 20, 20);
+        $this->inscribir($jorge->id, $liderazgo->id,    'en_curso',   18, 8,  7);
 
-        // Basquetbol: ACREDITADO
-        $carlosBasquet = Inscripcion::create([
-            'alumno_id'        => $carlos->id,
-            'actividad_id'     => $basquet->id,
-            'horas_acumuladas' => 36,
-            'estatus'          => 'acreditado',
-        ]);
-        $this->crearAsistencias($carlosBasquet->id, 18, 17, 18);
+        // ── Daniela Soto (primer semestre, solo inscrita) ──
+        $this->inscribir($daniela->id, $danza->id,    'inscrito', 0, 0, 0);
+        $this->inscribir($daniela->id, $pintura->id,  'en_curso', 8, 4, 4); // 100%
 
-        // Liderazgo: EN CURSO — 90% asistencia
-        $carlosLiderazgo = Inscripcion::create([
-            'alumno_id'        => $carlos->id,
-            'actividad_id'     => $liderazgo->id,
-            'horas_acumuladas' => 27,
-            'estatus'          => 'en_curso',
-        ]);
-        $this->crearAsistencias($carlosLiderazgo->id, 10, 9, 10);
+        // ── Miguel Flores (1 acreditada) ──
+        $this->inscribir($miguel->id, $ajedrez->id,  'acreditado', 32, 16, 14);
+        $this->inscribir($miguel->id, $futbol->id,   'en_curso',   20, 10, 8);
+
+        // ── Paola Guerrero (2 actividades en curso) ──
+        $this->inscribir($paola->id, $yoga->id,      'acreditado', 30, 15, 13);
+        $this->inscribir($paola->id, $natacion->id,  'en_curso',   20, 10, 7); // 70%
+
+        // ── Iván Corona (alumno de 9no, múltiples acreditadas) ──
+        $this->inscribir($ivan->id, $programacion->id, 'acreditado', 40, 20, 20);
+        $this->inscribir($ivan->id, $liderazgo->id,    'acreditado', 36, 18, 17);
+        $this->inscribir($ivan->id, $robotica->id,     'acreditado', 40, 20, 19);
+        $this->inscribir($ivan->id, $debate->id,       'en_curso',   12, 6,  6);
+
+        // ── Adriana León (1er semestre, en curso) ──
+        $this->inscribir($adriana->id, $danza->id,    'en_curso', 12, 6, 5);
+        $this->inscribir($adriana->id, $guitarra->id, 'inscrito', 0, 0, 0);
+
+        // ── Roberto Silva (1 acreditada, riesgo en otra) ──
+        $this->inscribir($roberto->id, $ajedrez->id,  'acreditado', 32, 16, 16);
+        $this->inscribir($roberto->id, $atletismo->id,'en_curso',   10, 8,  3); // 37.5% — riesgo
+
+        // ── Fernanda Ochoa (3 acreditadas — casi llena créditos) ──
+        $this->inscribir($fernanda->id, $locucion->id,    'acreditado', 28, 14, 14);
+        $this->inscribir($fernanda->id, $yoga->id,        'acreditado', 30, 15, 15);
+        $this->inscribir($fernanda->id, $fotografia->id,  'acreditado', 24, 12, 11);
+        $this->inscribir($fernanda->id, $teatro->id,      'en_curso',   10, 5,  4);
 
         // ──────────────────────────────────────────
         // 6. SOLICITUDES (EVIDENCIAS EXTERNAS)
         // ──────────────────────────────────────────
 
-        // Luis — APROBADA: Maratón de Running (1 crédito ya sumado arriba)
         $solLuisAprobada = Solicitud::create([
             'alumno_id'          => $luis->id,
             'nombre_actividad'   => 'Maratón de Running 5K — TESCHa',
@@ -346,13 +386,12 @@ class DatabaseSeeder extends Seeder
             'fecha_inicio'       => Carbon::now()->subMonths(2)->toDateString(),
             'fecha_fin'          => Carbon::now()->subMonths(2)->toDateString(),
             'horas'              => 4,
-            'descripcion'        => 'Participación en el maratón institucional como corredor oficial de la carrera de ISC.',
-            'ruta_archivo'       => 'evidencias/muestra-constancia-maraton.pdf',
+            'descripcion'        => 'Participación en el maratón institucional como corredor oficial.',
+            'ruta_archivo'       => 'evidencias/muestra-maraton.pdf',
             'estatus'            => 'aprobada',
             'creditos_otorgados' => 1,
         ]);
 
-        // María — PENDIENTE: Taller de Fotografía
         Solicitud::create([
             'alumno_id'        => $maria->id,
             'nombre_actividad' => 'Taller de Fotografía Digital',
@@ -361,70 +400,107 @@ class DatabaseSeeder extends Seeder
             'fecha_inicio'     => Carbon::now()->subWeeks(3)->toDateString(),
             'fecha_fin'        => Carbon::now()->subWeeks(1)->toDateString(),
             'horas'            => 16,
-            'descripcion'      => 'Taller intensivo de fotografía digital y edición con software libre.',
-            'ruta_archivo'     => 'evidencias/muestra-constancia-fotografia.pdf',
+            'descripcion'      => 'Taller intensivo de fotografía y edición con software libre.',
+            'ruta_archivo'     => 'evidencias/muestra-fotografia.pdf',
             'estatus'          => 'pendiente',
         ]);
 
-        // Carlos — RECHAZADA: Curso online (muy corto)
         $solCarlosRechazada = Solicitud::create([
-            'alumno_id'         => $carlos->id,
-            'nombre_actividad'  => 'Curso de Python en Coursera',
-            'tipo_actividad'    => 'cultural',
-            'institucion'       => 'Coursera / Google',
-            'fecha_inicio'      => Carbon::now()->subMonths(1)->subDays(5)->toDateString(),
-            'fecha_fin'         => Carbon::now()->subMonths(1)->toDateString(),
-            'horas'             => 3,
-            'descripcion'       => 'Introducción a Python para ciencia de datos.',
-            'ruta_archivo'      => 'evidencias/muestra-certificado-python.pdf',
-            'estatus'           => 'rechazada',
-            'motivo_rechazo'    => 'El certificado no cumple la duración mínima de 10 horas requerida por el reglamento S.A.A.C.',
-            'creditos_otorgados'=> 0,
+            'alumno_id'          => $carlos->id,
+            'nombre_actividad'   => 'Curso de Python en Coursera',
+            'tipo_actividad'     => 'cultural',
+            'institucion'        => 'Coursera / Google',
+            'fecha_inicio'       => Carbon::now()->subMonths(1)->subDays(5)->toDateString(),
+            'fecha_fin'          => Carbon::now()->subMonths(1)->toDateString(),
+            'horas'              => 3,
+            'descripcion'        => 'Introducción a Python para ciencia de datos.',
+            'ruta_archivo'       => 'evidencias/muestra-python.pdf',
+            'estatus'            => 'rechazada',
+            'motivo_rechazo'     => 'El certificado no cumple la duración mínima de 10 horas requerida por el reglamento S.A.A.C.',
+            'creditos_otorgados' => 0,
+        ]);
+
+        Solicitud::create([
+            'alumno_id'        => $sofia->id,
+            'nombre_actividad' => 'Concurso de Canto Institucional',
+            'tipo_actividad'   => 'cultural',
+            'institucion'      => 'TESCHa',
+            'fecha_inicio'     => Carbon::now()->subWeeks(2)->toDateString(),
+            'fecha_fin'        => Carbon::now()->subWeeks(2)->toDateString(),
+            'horas'            => 5,
+            'descripcion'      => 'Primer lugar en el concurso de canto del ciclo escolar 2026-1.',
+            'ruta_archivo'     => 'evidencias/muestra-canto.pdf',
+            'estatus'          => 'pendiente',
+        ]);
+
+        Solicitud::create([
+            'alumno_id'        => $roberto->id,
+            'nombre_actividad' => 'Torneo de Fútbol Inter-Tecnológicos',
+            'tipo_actividad'   => 'deportiva',
+            'institucion'      => 'TecNM',
+            'fecha_inicio'     => Carbon::now()->subMonths(1)->toDateString(),
+            'fecha_fin'        => Carbon::now()->subMonths(1)->addDays(2)->toDateString(),
+            'horas'            => 12,
+            'descripcion'      => 'Participación representando a TESCHa en el torneo regional inter-tecnológicos.',
+            'ruta_archivo'     => 'evidencias/muestra-futbol.pdf',
+            'estatus'          => 'pendiente',
         ]);
 
         // ──────────────────────────────────────────
         // 7. NOTIFICACIONES
         // ──────────────────────────────────────────
+        $luisUser  = User::where('email', 'luis.ramirez@tescha.edu.mx')->first();
+        $carlosUser = User::where('email', 'carlos.vega@tescha.edu.mx')->first();
+
         $luisUser->notify(new EvidenciaEvaluada($solLuisAprobada));
         $carlosUser->notify(new EvidenciaEvaluada($solCarlosRechazada));
 
         // ──────────────────────────────────────────
-        // 8. INVITACIÓN DE DEMOSTRACIÓN
+        // 8. INVITACIONES DE DEMO
         // ──────────────────────────────────────────
-        Invitacion::create([
-            'email' => 'nuevo.alumno@tescha.edu.mx',
-            'token' => Str::uuid(),
-        ]);
+        Invitacion::create(['email' => 'nuevo.alumno@tescha.edu.mx', 'token' => Str::uuid()]);
+        Invitacion::create(['email' => 'nuevo.docente@tescha.edu.mx', 'token' => Str::uuid()]);
     }
 
     /**
-     * Crea asistencias distribuidas realistamente en semanas anteriores.
-     *
-     * @param int $inscripcionId
-     * @param int $totalSesiones   Número total de sesiones del curso
-     * @param int $sesionesPresente Cuántas de esas sesiones asistió
-     * @param int $totalDias       Total de días distintos a registrar
+     * Crea una inscripción y sus asistencias de forma compacta.
      */
-    private function crearAsistencias(int $inscripcionId, int $totalSesiones, int $sesionesPresente, int $totalDias): void
-    {
-        // Genera fechas hacia atrás: 2 sesiones por semana
-        $fechas = [];
-        $base   = Carbon::now()->startOfWeek()->subDays(4); // inicia hace ~4 días
+    private function inscribir(
+        int $alumnoId,
+        int $actividadId,
+        string $estatus,
+        int $horasAcumuladas,
+        int $totalSesiones,
+        int $sesionesPresente
+    ): void {
+        $ins = Inscripcion::create([
+            'alumno_id'        => $alumnoId,
+            'actividad_id'     => $actividadId,
+            'horas_acumuladas' => $horasAcumuladas,
+            'estatus'          => $estatus,
+        ]);
 
-        for ($i = 0; $i < $totalDias; $i++) {
-            // Alterna martes y jueves retrocediendo semanas
-            $semana     = intdiv($i, 2);
-            $esMiercoles = ($i % 2 === 0);
-            $fecha      = $base->copy()->subWeeks($semana)->subDays($esMiercoles ? 2 : 0);
-            $fechas[]   = $fecha->toDateString();
+        if ($totalSesiones > 0) {
+            $this->crearAsistencias($ins->id, $totalSesiones, $sesionesPresente);
         }
+    }
 
-        // Marca las primeras $sesionesPresente como presentes, el resto ausentes
-        foreach ($fechas as $idx => $fecha) {
+    /**
+     * Genera asistencias distribuidas en semanas anteriores (2 sesiones/semana).
+     */
+    private function crearAsistencias(int $inscripcionId, int $total, int $presentes): void
+    {
+        $base = Carbon::now()->startOfWeek()->subDays(4);
+
+        for ($i = 0; $i < $total; $i++) {
+            $semana = intdiv($i, 2);
+            $offset = ($i % 2 === 0) ? 2 : 0;
+            $fecha  = $base->copy()->subWeeks($semana)->subDays($offset)->toDateString();
+
             Asistencia::create([
                 'inscripcion_id' => $inscripcionId,
                 'fecha'          => $fecha,
-                'asistio'        => $idx < $sesionesPresente,
+                'asistio'        => $i < $presentes,
             ]);
         }
     }
