@@ -96,8 +96,7 @@ class AlumnoEvidenciaController extends Controller
             'archivo.max'               => 'El archivo no puede superar los 5 MB.',
         ]);
 
-        // Guardar el archivo en el disco local (storage privado, fuera de public/)
-        $path = $request->file('archivo')->store('evidencias', 'local');
+        $path = $request->file('archivo')->store('evidencias', 'public');
 
         Solicitud::create([
             'alumno_id'        => $alumno->id,
