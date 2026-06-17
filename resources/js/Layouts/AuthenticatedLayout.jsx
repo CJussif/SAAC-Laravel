@@ -63,7 +63,7 @@ function Sidebar({ user, currentPath, onClose }) {
     const { current_semester } = usePage().props;
     const rol = user?.rol ?? 'alumno';
     const links = NAV[rol] ?? NAV.alumno;
-    const canCreateActivity = rol === 'administrador' || rol === 'docente';
+    const canCreateActivity = rol === 'administrador';
 
     return (
         <aside className="flex h-full w-60 flex-col bg-sidebar shadow-sidebar">

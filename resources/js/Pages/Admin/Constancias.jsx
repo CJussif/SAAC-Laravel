@@ -62,11 +62,6 @@ export default function Constancias({ constancias, kpis, filters }) {
                             <option value="yoga">Deportiva</option>
                             <option value="danza">Cultural</option>
                         </select>
-                        <select className="rounded-lg border border-cream-400 bg-white px-3 py-1.5 text-sm text-gray-600 focus:border-guinda focus:outline-none">
-                            <option>Todos los estatus</option>
-                            <option>Emitida</option>
-                            <option>Pendiente</option>
-                        </select>
                         <a
                             href={route('admin.constancias.exportar', { search, tipo })}
                             className="rounded-lg border border-cream-400 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-cream-100 transition-colors"
@@ -124,11 +119,6 @@ export default function Constancias({ constancias, kpis, filters }) {
                                                     >
                                                         Ver PDF
                                                     </a>
-                                                )}
-                                                {c.estatus === 'pendiente' && (
-                                                    <button className="rounded-md px-2.5 py-1.5 text-xs font-medium text-green-600 hover:bg-green-50 transition-colors">
-                                                        Emitir
-                                                    </button>
                                                 )}
                                             </div>
                                         </td>

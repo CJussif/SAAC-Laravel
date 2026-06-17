@@ -31,7 +31,10 @@ function AsistenciaBar({ pct }) {
 }
 
 export default function Expedientes({ expedientes, actividades }) {
-    const [search, setSearch] = useState('');
+    const initialSearch = typeof window !== 'undefined'
+        ? new URLSearchParams(window.location.search).get('search') ?? ''
+        : '';
+    const [search, setSearch] = useState(initialSearch);
     const [filtroActividad, setFiltroActividad] = useState('');
     const [filtroEstatus, setFiltroEstatus] = useState('');
 

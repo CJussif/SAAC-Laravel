@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import TipoBadge from '@/Components/TipoBadge';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 
 const ESTATUS_COLOR = {
     'acreditado': 'bg-green-100 text-green-700',
@@ -153,9 +153,12 @@ export default function Grupos({ grupos, alumnosPorGrupo }) {
                                                         </span>
                                                     </td>
                                                     <td className="px-5 py-3.5">
-                                                        <button className="rounded-md px-2.5 py-1.5 text-xs font-medium text-gray-500 hover:bg-cream-200 hover:text-guinda transition-colors whitespace-nowrap">
+                                                        <Link
+                                                            href={route('expedientes.index') + '?search=' + encodeURIComponent(a.matricula)}
+                                                            className="rounded-md px-2.5 py-1.5 text-xs font-medium text-gray-500 hover:bg-cream-200 hover:text-guinda transition-colors whitespace-nowrap"
+                                                        >
                                                             Ver expediente
-                                                        </button>
+                                                        </Link>
                                                     </td>
                                                 </tr>
                                             ))}
