@@ -289,8 +289,8 @@ class AlumnoActividadesController extends Controller
         $fmtFecha = fn (Carbon $d) => $d->day . ' de ' . $meses[$d->month] . ' de ' . $d->year;
 
         $qrData = "SAAC-TESCHa\nFolio: {$folio}\nAlumno: {$alumno->nombre} {$alumno->apellido_paterno} {$alumno->apellido_materno}\nMatrícula: {$alumno->matricula}\nActividad: {$actividad->nombre}";
-        $qrPng    = QrCode::format('png')->size(120)->margin(1)->generate($qrData);
-        $qrBase64 = 'data:image/png;base64,' . base64_encode($qrPng);
+        $qrSvg    = QrCode::format('svg')->size(120)->margin(1)->generate($qrData);
+        $qrBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
 
         $pdf = Pdf::loadView('constancia-pdf', [
             'folio'              => $folio,
