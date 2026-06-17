@@ -32,6 +32,8 @@ services:
       target: web
     image: saac-web
     depends_on: [app]
+    volumes:
+      - storage_data:/var/www/html/storage:ro
     restart: unless-stopped
 
   # ---- worker de colas (notificaciones EvidenciaEvaluada) ----
