@@ -64,6 +64,6 @@ echo ""
 echo "✓ Despliegue listo."
 $COMPOSE ps
 echo ""
-echo "  Prueba local en el VPS:   curl -I http://localhost:8080"
 echo "  Público (vía túnel):      https://tescha.tlapala.com"
+echo "  Prueba interna en el VPS: docker compose exec web curl -I http://localhost"
 echo "  Logs del túnel:           $COMPOSE logs -f cloudflared"

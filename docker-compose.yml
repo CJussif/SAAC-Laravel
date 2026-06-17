@@ -32,8 +32,6 @@ services:
       target: web
     image: saac-web
     depends_on: [app]
-    ports:
-      - "127.0.0.1:8080:80"
     restart: unless-stopped
 
   # ---- worker de colas (notificaciones EvidenciaEvaluada) ----
