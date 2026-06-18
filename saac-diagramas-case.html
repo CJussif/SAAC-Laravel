@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>SAAC — Diagramas CASE</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@700;900&display=swap');
+
+  :root {
+    --guinda:   #7B1D2A;
+    --verde:    #1B4332;
+    --cream:    #FAFAF5;
+    --cream2:   #F0EDE6;
+    --gray:     #6B7280;
+    --dark:     #111827;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: #E8E4DD;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+    align-items: center;
+  }
+
+  /* ── LABEL SECTION ── */
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gray);
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  /* ── DIAGRAM CARD ── */
+  .diagram {
+    background: var(--cream);
+    border-radius: 16px;
+    padding: 40px 48px;
+    width: 1060px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  }
+
+  .diagram-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--verde);
+    margin-bottom: 4px;
+  }
+  .diagram-title span {
+    display: inline-block;
+    width: 4px;
+    height: 24px;
+    background: var(--guinda);
+    border-radius: 2px;
+    vertical-align: middle;
+    margin-right: 10px;
+    margin-bottom: 2px;
+  }
+  .diagram-sub {
+    font-size: 13px;
+    color: var(--gray);
+    margin-bottom: 32px;
+    margin-left: 14px;
+  }
+
+  /* ══════════════════════════════════════
+     FLOWCHART
+  ══════════════════════════════════════ */
+  .flow-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+  }
+  .flow-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+  }
+  .flow-col-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+    color: #fff;
+  }
+  .label-alumno  { background: var(--guinda); }
+  .label-docente { background: #1d4ed8; }
+  .label-admin   { background: var(--verde); }
+  .label-sistema { background: #92400e; }
+
+  /* node */
+  .node {
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.35;
+    width: 100%;
+    max-width: 180px;
+    position: relative;
+  }
+  .node-process {
+    background: #fff;
+    border: 2px solid #D1C9BE;
+    color: var(--dark);
+  }
+  .node-guinda {
+    background: var(--guinda);
+    color: #fff;
+    border: 2px solid var(--guinda);
+  }
+  .node-verde {
+    background: var(--verde);
+    color: #fff;
+    border: 2px solid var(--verde);
+  }
+  .node-blue {
+    background: #1d4ed8;
+    color: #fff;
+    border: 2px solid #1d4ed8;
+  }
+  .node-amber {
+    background: #92400e;
+    color: #fff;
+    border: 2px solid #92400e;
+  }
+  .node-diamond {
+    background: #fff3cd;
+    border: 2px solid #f59e0b;
+    color: #92400e;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    padding: 20px 14px;
+    font-size: 11px;
+  }
+  .node-danger {
+    background: #fee2e2;
+    border: 2px dashed #dc2626;
+    color: #991b1b;
+  }
+  .node-success {
+    background: #dcfce7;
+    border: 2px solid #16a34a;
+    color: #14532d;
+  }
+
+  /* arrow */
+  .arrow-down {
+    width: 2px;
+    height: 20px;
+    background: #9CA3AF;
+    margin: 0 auto;
+    position: relative;
+  }
+  .arrow-down::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: -4px;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 7px solid #9CA3AF;
+  }
+  .arrow-right {
+    display: flex;
+    align-items: center;
+    padding-top: 50px;
+  }
+  .arrow-right-line {
+    height: 2px;
+    width: 28px;
+    background: #9CA3AF;
+    position: relative;
+  }
+  .arrow-right-line::after {
+    content: '';
+    position: absolute;
+    right: -5px;
+    top: -4px;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 7px solid #9CA3AF;
+  }
+
+  /* ── AS-IS manual flow ── */
+  .asis-grid {
+    display: grid;
+    grid-template-columns: 1fr 40px 1fr 40px 1fr 40px 1fr;
+    gap: 8px;
+    align-items: start;
+  }
+  .asis-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .step-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .pain {
+    background: #fee2e2;
+    border: 1.5px dashed #dc2626;
+    border-radius: 8px;
+    padding: 5px 8px;
+    font-size: 10px;
+    color: #991b1b;
+    text-align: center;
+    margin-top: 4px;
+    width: 100%;
+    max-width: 170px;
+  }
+
+  /* ── TO-BE flow ── */
+  .tobe-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px 16px;
+  }
+  .tobe-step {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px;
+    border: 1.5px solid #E5DDD5;
+    position: relative;
+  }
+  .tobe-step-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tobe-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .tobe-title { font-size: 12px; font-weight: 700; color: var(--dark); }
+  .tobe-desc  { font-size: 11px; color: var(--gray); line-height: 1.4; }
+  .tobe-badge {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+  }
+  .badge-auto { background: #dcfce7; color: #14532d; }
+  .badge-doc  { background: #dbeafe; color: #1e3a8a; }
+  .badge-sys  { background: #fef3c7; color: #78350f; }
+
+  .improve-tag {
+    position: absolute;
+    top: -9px;
+    right: 10px;
+    background: #16a34a;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 10px;
+    letter-spacing: .5px;
+  }
+
+  /* ══════════════════════════════════════
+     USE CASE DIAGRAM
+  ══════════════════════════════════════ */
+  .uc-container {
+    display: grid;
+    grid-template-columns: 140px 1fr 140px;
+    gap: 24px;
+    align-items: start;
+  }
+  .actor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .actor-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+  }
+  .actor-name {
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    color: var(--dark);
+  }
+  .actor-role {
+    font-size: 10px;
+    color: var(--gray);
+    text-align: center;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+  }
+
+  /* system boundary */
+  .system-box {
+    border: 2.5px solid #D1C9BE;
+    border-radius: 12px;
+    padding: 16px;
+    position: relative;
+  }
+  .system-box-title {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--cream);
+    padding: 0 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gray);
+    white-space: nowrap;
+  }
+
+  .uc-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+  }
+  .uc-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .uc-group-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 3px 0;
+    border-radius: 4px;
+    margin-bottom: 2px;
+  }
+  .uc-case {
+    border-radius: 20px;
+    padding: 7px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    border: 2px solid;
+    line-height: 1.3;
+  }
+  .uc-alumno  { border-color: var(--guinda); color: var(--guinda); background: #FFF5F5; }
+  .uc-docente { border-color: #1d4ed8;       color: #1e3a8a;       background: #EFF6FF; }
+  .uc-admin   { border-color: var(--verde);  color: var(--verde);  background: #F0FDF4; }
+
+  .uc-label-alumno  { background: #FFF5F5; color: var(--guinda); }
+  .uc-label-docente { background: #EFF6FF; color: #1e3a8a; }
+  .uc-label-admin   { background: #F0FDF4; color: var(--verde); }
+
+  /* connector lines from actors to cases — decorative only */
+  .actor-left  { margin-right: -8px; align-self: center; }
+  .actor-right { margin-left: -8px;  align-self: center; }
+  .connector-label {
+    font-size: 9px;
+    color: var(--gray);
+    text-align: center;
+    font-style: italic;
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     DIAGRAMA 1: FLUJO AS-IS (PROCESO ACTUAL)
+══════════════════════════════════════ -->
+<div>
+  <p class="section-label">Diagrama 1 de 3 — screenshot por separado</p>
+  <div class="diagram">
+    <div class="diagram-title"><span></span>Proceso Actual (AS-IS) — Sin Sistema</div>
+    <p class="diagram-sub">Flujo manual vigente antes del SAAC · identifica cuellos de botella y puntos de fallo</p>
+
+    <div style="display:flex; flex-direction:column; gap:0;">
+
+      <!-- Row 1: steps 1-4 -->
+      <div style="display:grid; grid-template-columns:1fr 32px 1fr 32px 1fr 32px 1fr; align-items:center; gap:4px; margin-bottom:4px;">
+
+        <div class="asis-step">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+            <div class="step-num" style="background:var(--guinda)">1</div>
+            <span style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1px;">Alumno</span>
+          </div>
+          <div class="node node-process">Solicita información sobre actividades complementarias</div>
+          <div class="pain">Solo disponible en horario de oficina</div>
+        </div>
+
+        <div class="arrow-right" style="padding-top:18px;">
+          <div class="arrow-right-line"></div>
+        </div>
+
+        <div class="asis-step">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+            <div class="step-num" style="background:#92400e">2</div>
+            <span style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1px;">Administrativo</span>
+          </div>
+          <div class="node node-process">Revisa listas en papel, Excel o archivos dispersos</div>
+          <div class="pain">Datos desactualizados · sin control de versiones</div>
+        </div>
+
+        <div class="arrow-right" style="padding-top:18px;">
+          <div class="arrow-right-line"></div>
+        </div>
+
+        <div class="asis-step">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+            <div class="step-num" style="background:var(--guinda)">3</div>
+            <span style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1px;">Alumno</span>
+          </div>
+          <div class="node node-process">Llena formato físico de inscripción</div>
+          <div class="pain">Sin validación de cupo ni cruces de horario</div>
+        </div>
+
+        <div class="arrow-right" style="padding-top:18px;">
+          <div class="arrow-right-line"></div>
+        </div>
+
+        <div class="asis-step">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+            <div class="step-num" style="background:#1d4ed8">4</div>
+            <span style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1px;">Docente</span>
+          </div>
+          <div class="node node-process">Pasa lista manualmente en papel cada sesión</div>
+          <div class="pain">Propensa a extravío · sin respaldo digital</div>
+        </div>
+      </div>
+
+      <!-- Conector vertical central -->
+      <div style="display:flex;justify-content:flex-end;padding-right:calc(25% - 16px);margin:0;">
+        <div class="arrow-down" style="height:18px;"></div>
+      </div>
+
+      <!-- Row 2: steps 5-8 (de derecha a izquierda visualmente) -->
+      <div style="display:grid; grid-template-columns:1fr 32px 1fr 32px 1fr 32px 1fr; align-items:center; gap:4px; margin-top:4px;">
+
+        <div class="asis-step">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+            <div class="step-num" style="background:var(--guinda)">8</div>
+            <span style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1px;">Alumno</span>
+          </div>
+          <div class="node node-danger">Recoge constancia físicamente · riesgo de extravío</div>
+        </div>
+
+        <div class="arrow-right" style="padding-top:18px;transform:scaleX(-1);">
+          <div class="arrow-right-line"></div>
+        </div>
+
+        <div class="asis-step">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+            <div class="step-num" style="background:#92400e">7</div>
+            <span style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1px;">Administrativo</span>
+          </div>
+          <div class="node node-process">Genera constancia manualmente, una por una</div>
+          <div class="pain">Errores en nombres · semanas de espera</div>
+        </div>
+
+        <div class="arrow-right" style="padding-top:18px;transform:scaleX(-1);">
+          <div class="arrow-right-line"></div>
+        </div>
+
+        <div class="asis-step">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+            <div class="step-num" style="background:#92400e">6</div>
+            <span style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1px;">Administrativo</span>
+          </div>
+          <div class="node node-process">Revisa asistencias manualmente al final del semestre</div>
+          <div class="pain">Proceso de días · alto margen de error</div>
+        </div>
+
+        <div class="arrow-right" style="padding-top:18px;transform:scaleX(-1);">
+          <div class="arrow-right-line"></div>
+        </div>
+
+        <div class="asis-step">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+            <div class="step-num" style="background:#1d4ed8">5</div>
+            <span style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1px;">Docente</span>
+          </div>
+          <div class="node node-process">Entrega lista de asistencias al departamento</div>
+          <div class="pain">Sin estandarización · datos incompletos frecuentes</div>
+        </div>
+      </div>
+
+    </div><!-- /flow -->
+
+    <!-- Summary bar -->
+    <div style="margin-top:28px;background:#fee2e2;border-radius:8px;padding:12px 16px;display:flex;gap:32px;border:1.5px dashed #dc2626;">
+      <div style="font-size:11px;color:#991b1b;"><span style="font-weight:700;">⚠ Puntos críticos identificados:</span></div>
+      <div style="font-size:11px;color:#991b1b;">📄 Sin respaldo digital</div>
+      <div style="font-size:11px;color:#991b1b;">⏱ Tiempos de espera altos</div>
+      <div style="font-size:11px;color:#991b1b;">❌ Sin validación automática de cupo</div>
+      <div style="font-size:11px;color:#991b1b;">🗂 Información dispersa y desactualizada</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     DIAGRAMA 2: FLUJO TO-BE (PROCESO PROPUESTO)
+══════════════════════════════════════ -->
+<div>
+  <p class="section-label">Diagrama 2 de 3 — screenshot por separado</p>
+  <div class="diagram">
+    <div class="diagram-title"><span></span>Proceso Propuesto (TO-BE) — Con SAAC</div>
+    <p class="diagram-sub">Flujo automatizado · elimina intervención manual en 6 de 8 pasos del proceso original</p>
+
+    <div class="tobe-grid">
+
+      <div class="tobe-step">
+        <div style="position:absolute;top:-9px;left:12px;background:var(--guinda);color:#fff;font-size:9px;font-weight:700;padding:1px 8px;border-radius:10px;letter-spacing:.5px;">01</div>
+        <div class="tobe-step-header">
+          <div class="tobe-num" style="background:var(--guinda)">A</div>
+          <div class="tobe-title">Acceso al sistema</div>
+        </div>
+        <div class="tobe-desc">Alumno inicia sesión con número de control. Autenticación con roles vía Laravel Breeze.</div>
+        <span class="tobe-badge badge-auto">Automático</span>
+      </div>
+
+      <div class="tobe-step">
+        <div style="position:absolute;top:-9px;left:12px;background:var(--guinda);color:#fff;font-size:9px;font-weight:700;padding:1px 8px;border-radius:10px;letter-spacing:.5px;">02</div>
+        <div class="tobe-step-header">
+          <div class="tobe-num" style="background:var(--guinda)">A</div>
+          <div class="tobe-title">Consulta catálogo</div>
+        </div>
+        <div class="tobe-desc">Visualiza actividades disponibles con cupo en tiempo real, horario y tipo de periodo.</div>
+        <span class="tobe-badge badge-auto">Tiempo real</span>
+      </div>
+
+      <div class="tobe-step">
+        <div class="improve-tag">✓ Resuelve punto crítico</div>
+        <div style="position:absolute;top:-9px;left:12px;background:var(--guinda);color:#fff;font-size:9px;font-weight:700;padding:1px 8px;border-radius:10px;letter-spacing:.5px;">03</div>
+        <div class="tobe-step-header">
+          <div class="tobe-num" style="background:var(--guinda)">A</div>
+          <div class="tobe-title">Inscripción validada</div>
+        </div>
+        <div class="tobe-desc">Sistema verifica cupo disponible automáticamente. Bloquea si está lleno sin intervención humana.</div>
+        <span class="tobe-badge badge-auto">Validación automática</span>
+      </div>
+
+      <div class="tobe-step">
+        <div style="position:absolute;top:-9px;left:12px;background:#1d4ed8;color:#fff;font-size:9px;font-weight:700;padding:1px 8px;border-radius:10px;letter-spacing:.5px;">04</div>
+        <div class="tobe-step-header">
+          <div class="tobe-num" style="background:#1d4ed8)">D</div>
+          <div class="tobe-title">Pase de lista digital</div>
+        </div>
+        <div class="tobe-desc">Docente registra asistencia por sesión desde cualquier dispositivo. Datos persistidos inmediatamente.</div>
+        <span class="tobe-badge badge-doc">Docente</span>
+      </div>
+
+      <div class="tobe-step">
+        <div class="improve-tag">✓ Resuelve punto crítico</div>
+        <div style="position:absolute;top:-9px;left:12px;background:#92400e;color:#fff;font-size:9px;font-weight:700;padding:1px 8px;border-radius:10px;letter-spacing:.5px;">05</div>
+        <div class="tobe-step-header">
+          <div class="tobe-num" style="background:#92400e">S</div>
+          <div class="tobe-title">Cálculo automático</div>
+        </div>
+        <div class="tobe-desc">Sistema calcula el porcentaje de asistencia en tiempo real. Alerta visual si está por debajo del 80%.</div>
+        <span class="tobe-badge badge-sys">Sistema</span>
+      </div>
+
+      <div class="tobe-step">
+        <div style="position:absolute;top:-9px;left:12px;background:var(--verde);color:#fff;font-size:9px;font-weight:700;padding:1px 8px;border-radius:10px;letter-spacing:.5px;">06</div>
+        <div class="tobe-step-header">
+          <div class="tobe-num" style="background:var(--verde)">Ad</div>
+          <div class="tobe-title">Acreditación</div>
+        </div>
+        <div class="tobe-desc">Docente acredita al alumno desde el panel de grupos. El estatus cambia automáticamente en la BD.</div>
+        <span class="tobe-badge" style="background:#f0fdf4;color:var(--verde);">Admin / Docente</span>
+      </div>
+
+      <div class="tobe-step">
+        <div class="improve-tag">✓ RF06 — QR</div>
+        <div style="position:absolute;top:-9px;left:12px;background:#92400e;color:#fff;font-size:9px;font-weight:700;padding:1px 8px;border-radius:10px;letter-spacing:.5px;">07</div>
+        <div class="tobe-step-header">
+          <div class="tobe-num" style="background:#92400e">S</div>
+          <div class="tobe-title">Generación PDF + QR</div>
+        </div>
+        <div class="tobe-desc">Sistema genera constancia oficial con código QR de verificación automáticamente al acreditar. DomPDF.</div>
+        <span class="tobe-badge badge-sys">Automático</span>
+      </div>
+
+      <div class="tobe-step">
+        <div class="improve-tag">✓ Resuelve punto crítico</div>
+        <div style="position:absolute;top:-9px;left:12px;background:var(--guinda);color:#fff;font-size:9px;font-weight:700;padding:1px 8px;border-radius:10px;letter-spacing:.5px;">08</div>
+        <div class="tobe-step-header">
+          <div class="tobe-num" style="background:var(--guinda)">A</div>
+          <div class="tobe-title">Descarga inmediata</div>
+        </div>
+        <div class="tobe-desc">Alumno descarga su constancia PDF desde su perfil en cualquier momento, desde cualquier dispositivo.</div>
+        <span class="tobe-badge badge-auto">Sin trámite presencial</span>
+      </div>
+
+    </div>
+
+    <div style="margin-top:24px;background:#dcfce7;border-radius:8px;padding:12px 16px;display:flex;gap:32px;border:1.5px solid #16a34a;">
+      <div style="font-size:11px;color:#14532d;"><span style="font-weight:700;">✓ Mejoras implementadas:</span></div>
+      <div style="font-size:11px;color:#14532d;">🚀 Validación automática de cupo</div>
+      <div style="font-size:11px;color:#14532d;">📊 Seguimiento en tiempo real</div>
+      <div style="font-size:11px;color:#14532d;">📄 Constancias con QR instantáneas</div>
+      <div style="font-size:11px;color:#14532d;">🔒 Acceso seguro por roles</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     DIAGRAMA 3: CASOS DE USO
+══════════════════════════════════════ -->
+<div>
+  <p class="section-label">Diagrama 3 de 3 — screenshot por separado</p>
+  <div class="diagram">
+    <div class="diagram-title"><span></span>Diagrama de Casos de Uso — SAAC</div>
+    <p class="diagram-sub">Define los límites del sistema y los permisos de los tres actores principales</p>
+
+    <div class="uc-container">
+
+      <!-- Actor: Alumno -->
+      <div class="actor actor-left">
+        <div class="actor-icon" style="background:#FFF5F5;border:2px solid var(--guinda);">👨‍🎓</div>
+        <div class="actor-name">Alumno</div>
+        <div class="actor-role">Usuario final</div>
+        <div style="margin-top:8px;width:2px;height:40px;background:var(--guinda);margin-left:auto;margin-right:auto;"></div>
+        <div style="width:40px;height:2px;background:var(--guinda);margin-top:-1px;"></div>
+      </div>
+
+      <!-- System boundary -->
+      <div class="system-box">
+        <div class="system-box-title">Sistema S.A.A.C. — Límite del sistema</div>
+        <div class="uc-cols">
+
+          <!-- Alumno use cases -->
+          <div class="uc-group">
+            <div class="uc-group-label uc-label-alumno">Alumno</div>
+            <div class="uc-case uc-alumno">Consultar catálogo de actividades</div>
+            <div class="uc-case uc-alumno">Inscribirse en actividad</div>
+            <div class="uc-case uc-alumno">Ver historial académico</div>
+            <div class="uc-case uc-alumno">Subir evidencia externa</div>
+            <div class="uc-case uc-alumno">Descargar constancia PDF + QR</div>
+            <div class="uc-case uc-alumno">Ver notificaciones</div>
+          </div>
+
+          <!-- Docente use cases -->
+          <div class="uc-group">
+            <div class="uc-group-label uc-label-docente">Docente</div>
+            <div class="uc-case uc-docente">Registrar pase de lista</div>
+            <div class="uc-case uc-docente">Ver mis grupos</div>
+            <div class="uc-case uc-docente">Consultar expedientes</div>
+            <div class="uc-case uc-docente">Exportar expedientes CSV</div>
+            <div class="uc-case uc-docente">Acreditar alumno</div>
+          </div>
+
+          <!-- Admin use cases -->
+          <div class="uc-group">
+            <div class="uc-group-label uc-label-admin">Administrador</div>
+            <div class="uc-case uc-admin">Gestionar catálogo de actividades</div>
+            <div class="uc-case uc-admin">Validar evidencias externas</div>
+            <div class="uc-case uc-admin">Gestionar alumnos y créditos</div>
+            <div class="uc-case uc-admin">Ver constancias emitidas</div>
+            <div class="uc-case uc-admin">Enviar invitaciones de acceso</div>
+            <div class="uc-case uc-admin">Exportar constancias CSV</div>
+          </div>
+
+        </div>
+
+        <!-- Shared use case -->
+        <div style="margin-top:16px;padding-top:14px;border-top:1.5px dashed #D1C9BE;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);text-align:center;margin-bottom:10px;">Casos de uso compartidos</div>
+          <div style="display:flex;gap:12px;justify-content:center;">
+            <div style="border-radius:20px;padding:6px 16px;font-size:11px;font-weight:600;border:2px solid #D1C9BE;color:var(--gray);background:#fff;">Iniciar sesión</div>
+            <div style="border-radius:20px;padding:6px 16px;font-size:11px;font-weight:600;border:2px solid #D1C9BE;color:var(--gray);background:#fff;">Actualizar perfil</div>
+            <div style="border-radius:20px;padding:6px 16px;font-size:11px;font-weight:600;border:2px solid #D1C9BE;color:var(--gray);background:#fff;">Cerrar sesión</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actor: Administrador -->
+      <div class="actor actor-right">
+        <div class="actor-icon" style="background:#F0FDF4;border:2px solid var(--verde);">👩‍💼</div>
+        <div class="actor-name">Administrador</div>
+        <div class="actor-role">Control total</div>
+        <div style="margin-top:8px;width:2px;height:40px;background:var(--verde);margin-left:auto;margin-right:auto;"></div>
+        <div style="width:40px;height:2px;background:var(--verde);margin-top:-1px;margin-left:-20px;"></div>
+      </div>
+
+    </div>
+
+    <!-- Docente actor below -->
+    <div style="display:flex;justify-content:center;margin-top:20px;gap:12px;align-items:center;">
+      <div style="width:2px;height:30px;background:#1d4ed8;"></div>
+    </div>
+    <div style="display:flex;justify-content:center;">
+      <div class="actor">
+        <div class="actor-icon" style="background:#EFF6FF;border:2px solid #1d4ed8;">👨‍🏫</div>
+        <div class="actor-name">Docente</div>
+        <div class="actor-role">Control de grupo</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<p style="text-align:center;font-size:11px;color:#9CA3AF;padding-bottom:20px;">
+  SAAC · Ingeniería de Software 4651 · 2026-1 · TESCHa
+</p>
+
+</body>
+</html>
